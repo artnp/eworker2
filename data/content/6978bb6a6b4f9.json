@@ -1,7 +1,10 @@
 {
     "id": "6978bb6a6b4f9",
     "title": "สคริปต์ Addon Chrome ไล่ไต่เก็บข้อมูลสินค้าใน Shopee Affiliate ",
-    "content": "<ul><li>ติดตั้งสคริปต์เสร็จแล้ว<\/li><li>เมื่อเข้าหน้าเว็บ <a href=\"https:\/\/affiliate.shopee.co.th\/offer\/product_offer\" target=\"_blank\" style=\"background-color: rgb(37, 39, 40); color: rgb(226, 229, 233);\"><strong>https:\/\/affiliate.shopee.co.th\/offer\/product_offer<\/strong><\/a> จะแสดงปุ่มกดด้านซ้ายล่าง<\/li><li>เมื่อกดปุ่ม ระบบจะเริ่มดำเนินการไต่เก็บข้อมูลทันที ตั้งแต่หน้า 1 จนถึง หน้าสุดท้าย<\/li><li>จากนั้นจะไปเริ่มไต่หมวดหมู่อื่นจนครบ<\/li><li>เมื่อเสร็จแล้วไฟล์ .csv ทั้งหมดจะอยู่ในโฟเดอร์ที่คุณให้บันทึกไฟล์ในเบราว์เซอร์<\/li><li>ให้คุณคัดลอกไฟล์<strong> mergeCSV.bat<\/strong> ไปไว้ในโฟเดอร์นั้น เมื่อคลิกแล้วจะรวมไฟล์ให้เป็นไฟล์เดียวทันที<\/li><\/ul><p><br><\/p><h2>วิธีติดตั้งสคริปต์<\/h2><ol><li>แตกไฟล์ .zip ออกมาให้เป็นโฟลเดอร์ปกติ<\/li><li>เปิด Chrome พิมพ์ <strong>chrome:\/\/extensions<\/strong> ในช่อง URL แล้วกด Enter (หรือไปที่ เมนู 3 จุด &gt; ส่วนขยาย &gt; จัดการส่วนขยาย)<\/li><li>ที่มุมขวาบน ให้กดเปิดสวิตช์ <strong>\"โหมดนักพัฒนาซอฟต์แวร์\"<\/strong> (Developer mode)<\/li><li>กด <strong>\"โหลดส่วนขยายที่คลายแพ็กแล้ว\"<\/strong> (Load unpacked)<\/li><li>เลือก โฟเดอร์ ที่เราแตกไฟล์ไว้<\/li><\/ol>",
+    "content": "<ul><li>ติดตั้งสคริปต์เสร็จแล้ว<\/li><li>เมื่อเข้าหน้าเว็บ <a href=\"https:\/\/affiliate.shopee.co.th\/offer\/product_offer\" target=\"_blank\" style=\"color: rgb(226, 229, 233); background-color: rgb(37, 39, 40);\"><strong>https:\/\/affiliate.shopee.co.th\/offer\/product_offer<\/strong><\/a> จะแสดงปุ่มกดด้านซ้ายล่าง<\/li><li>เมื่อกดปุ่ม ระบบจะเริ่มดำเนินการไต่เก็บข้อมูลทันที ตั้งแต่หน้า 1 จนถึง หน้าสุดท้าย<\/li><li>จากนั้นจะไปเริ่มไต่หมวดหมู่อื่นจนครบ<\/li><li>เมื่อเสร็จแล้วไฟล์ .csv ทั้งหมดจะอยู่ในโฟเดอร์ที่คุณให้บันทึกไฟล์ในเบราว์เซอร์<\/li><li>ให้คุณคัดลอกไฟล์<strong> mergeCSV.bat<\/strong> ไปไว้ในโฟเดอร์นั้น เมื่อคลิกแล้วจะรวมไฟล์ให้เป็นไฟล์เดียวทันที<\/li><\/ul><p><br><\/p><h2>วิธีติดตั้งสคริปต์<\/h2><ol><li>แตกไฟล์ .zip ออกมาให้เป็นโฟลเดอร์ปกติ<\/li><li>เปิด Chrome พิมพ์ <strong>chrome:\/\/extensions<\/strong> ในช่อง URL แล้วกด Enter (หรือไปที่ เมนู 3 จุด &gt; ส่วนขยาย &gt; จัดการส่วนขยาย)<\/li><li>ที่มุมขวาบน ให้กดเปิดสวิตช์ <strong>\"โหมดนักพัฒนาซอฟต์แวร์\"<\/strong> (Developer mode)<\/li><li>กด <strong>\"โหลดส่วนขยายที่คลายแพ็กแล้ว\"<\/strong> (Load unpacked)<\/li><li>เลือก โฟเดอร์ ที่เราแตกไฟล์ไว้<\/li><\/ol>",
     "price": "150",
-    "updated_at": "2026-01-27 13:51:11"
+    "tags": [
+        "Addon Chrome"
+    ],
+    "updated_at": "2026-01-27 14:00:58"
 }
