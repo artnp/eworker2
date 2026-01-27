@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าร้านค้า</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Noto+Sans+Thai:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary: #8DEB2D;
+            --bg: #0F1115;
+            --card-bg: #1A1D24;
+            --text-main: #FFFFFF;
+            --text-dim: #A0AEC0;
+            --border: rgba(255, 255, 255, 0.05);
+            --accent: #3182CE;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), #fff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .hero-sub {
+            color: var(--text-dim);
+            font-size: 1.2rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(141, 235, 45, 0.05), transparent);
+            pointer-events: none;
+        }
+
+        .product-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .product-desc {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .product-price {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .buy-btn {
+            background: var(--primary);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        /* Modal / QR Overlay */
+        #payment-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 2px;
+            border-radius: 24px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            animation: modalIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        canvas#slip-canvas {
+            width: 100%;
+            height: auto;
+            border-radius: 24px;
+            display: block;
+        }
+
+        .payment-instructions {
+            margin-top: 20px;
+            color: #fff;
+            text-align: center;
+        }
+
+        #hidden-qr-container {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1 class="hero-title">หน้าร้านค้า</h1>
+            <p class="hero-sub" id="store-name">แหล่งรวม ความรู้ และ สคริปต์เจ๋ง ๆ เฉพาะคุณ</p>
+        </header>
+
+        <div class="products-grid" id="products-container">
+            <!-- Products will load here -->
+        </div>
+    </div>
+
+    <!-- Modal for Payment -->
+    <div id="payment-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">×</span>
+            <div id="slip-container">
+                <canvas id="slip-canvas"></canvas>
+            </div>
+            <div class="payment-instructions">
+                <p>สแกนชำระเงินแล้วส่งสลิปเพื่อขอรับลิ้งค์</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="hidden-qr-container"></div>
+
+    <script>
+        let settings = { promptpay_id: '0800000000', store_name: 'Premium Knowledge Shop' };
+
+        // --- PromptPay Logic from User ---
+        const BANK_ICONS_REPO = "https://raw.githubusercontent.com/casperstack/thai-banks-logo/master/icons/";
+        const BANK_FILES = ['KBANK.png', 'SCB.png', 'BBL.png', 'KTB.png', 'BAY.png'];
+        const loadedIcons = {};
+
+        function preloadIcons() {
+            BANK_FILES.forEach(file => {
+                const img = new Image();
+                img.crossOrigin = "Anonymous";
+                img.src = BANK_ICONS_REPO + file;
+                loadedIcons[file] = img;
+            });
+        }
+
+        function crc16(data) {
+            let crc = 0xFFFF;
+            for (let i = 0; i < data.length; i++) {
+                let x = ((crc >> 8) ^ data.charCodeAt(i)) & 0xFF;
+                x ^= x >> 4;
+                crc = ((crc << 8) ^ (x << 12) ^ (x << 5) ^ x) & 0xFFFF;
+            }
+            return crc.toString(16).toUpperCase().padStart(4, '0');
+        }
+
+        function formatTag(id, value) {
+            return id + value.length.toString().padStart(2, '0') + value;
+        }
+
+        function generatePromptPayPayload(id, amount = 0) {
+            let cleanId = id.replace(/[^0-9]/g, '');
+            let target = cleanId.startsWith('0') && cleanId.length === 10 ? "0066" + cleanId.substring(1) : cleanId;
+            let accType = (cleanId.length >= 13 && !cleanId.startsWith('0')) ? '02' : '01';
+            const subChunk = formatTag('00', 'A000000677010111') + formatTag(accType, target);
+            const tag29 = formatTag('29', subChunk);
+            let p = formatTag('00', '01') + formatTag('01', '11') + tag29 + formatTag('53', '764') + formatTag('58', 'TH');
+            if (amount > 0) p += formatTag('54', parseFloat(amount).toFixed(2));
+            p += '6304';
+            p += crc16(p);
+            return p;
+        }
+
+        function createPremiumSlip(qrCanvas, id, amount) {
+            const canvas = document.getElementById('slip-canvas');
+            const ctx = canvas.getContext('2d');
+            const W = 400, H = 600;
+            canvas.width = W; canvas.height = H;
+
+            const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+            bgGrad.addColorStop(0, '#f8f9fa'); bgGrad.addColorStop(1, '#e9ecef');
+            ctx.fillStyle = bgGrad; ctx.fillRect(0, 0, W, H);
+
+            ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(W, 0); ctx.lineTo(W, 140);
+            ctx.bezierCurveTo(W, 140, W / 2, 170, 0, 140); ctx.closePath();
+            const headGrad = ctx.createLinearGradient(0, 0, W, 140);
+            headGrad.addColorStop(0, '#003366'); headGrad.addColorStop(1, '#0056b3');
+            ctx.fillStyle = headGrad; ctx.fill();
+
+            ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center'; ctx.font = 'bold 24px sans-serif';
+            ctx.fillText('สแกนชำระเงิน', W / 2, 50);
+            ctx.font = '14px sans-serif'; ctx.fillStyle = 'rgba(255,255,255,0.8)';
+            ctx.fillText('SCAN PAYMENT', W / 2, 72);
+
+            const cardY = 110, cardH = 80, cardW = 320, cardX = (W - cardW) / 2;
+            ctx.shadowColor = 'rgba(0,0,0,0.1)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 5;
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath(); ctx.roundRect(cardX, cardY, cardW, cardH, 16); ctx.fill();
+            ctx.shadowColor = 'transparent';
+
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.font = 'bold 36px sans-serif'; ctx.fillStyle = '#00467f';
+            ctx.fillText(parseFloat(amount).toLocaleString('en-US') + ' ฿', W / 2, cardY + cardH / 2);
+
+            const qrSize = 240, qrY = 220, qrX = (W - qrSize) / 2;
+            ctx.fillStyle = '#ffffff'; ctx.shadowColor = 'rgba(0,0,0,0.05)'; ctx.shadowBlur = 4;
+            ctx.beginPath(); ctx.roundRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20, 12); ctx.fill();
+            ctx.shadowColor = 'transparent';
+
+            if (qrCanvas) ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+
+            ctx.fillStyle = '#1e3a8a'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText('PromptPay', W / 2, qrY + qrSize + 40);
+            ctx.fillStyle = '#64748b'; ctx.font = '14px monospace';
+            ctx.fillText(id, W / 2, qrY + qrSize + 60);
+
+            const cSize = 28, gap = 8, extraText = "+ และอื่นๆ";
+            ctx.font = 'bold 12px sans-serif';
+            const textWidth = ctx.measureText(extraText).width;
+            const fY = H - 55;
+            const iconsWidth = (BANK_FILES.length * cSize) + ((BANK_FILES.length - 1) * gap);
+            const fW = iconsWidth + 15 + textWidth;
+            let fX = (W - fW) / 2;
+
+            BANK_FILES.forEach((file, i) => {
+                const bx = fX + (i * (cSize + gap));
+                const img = loadedIcons[file];
+                if (img && img.complete) {
+                    ctx.save(); ctx.beginPath(); ctx.arc(bx + cSize / 2, fY + cSize / 2, cSize / 2, 0, Math.PI * 2);
+                    ctx.clip(); ctx.drawImage(img, bx, fY, cSize, cSize); ctx.restore();
+                }
+            });
+
+            ctx.fillStyle = '#adb5bd'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+            ctx.fillText(extraText, fX + iconsWidth + 12, fY + cSize / 2);
+        }
+
+        // --- Page Logic ---
+        async function loadStore() {
+            try {
+                // Load Settings
+                const setRes = await fetch('data/settings.json');
+                if (setRes.ok) {
+                    settings = await setRes.json();
+                    document.getElementById('store-name').textContent = settings.store_name;
+                }
+
+                // Load Products (Fetch from GitHub-synced JSON)
+                const res = await fetch('data/products_public.json');
+                const products = await res.json();
+                const container = document.getElementById('products-container');
+
+                container.innerHTML = products.map(p => `
+                <div class="product-card" onclick="showPayment('${p.title}', ${p.price})">
+                    <div class="product-title">${p.title}</div>
+                    <div class="product-desc">${p.description}</div>
+                    <div class="product-footer">
+                        <div class="product-price">${parseFloat(p.price).toLocaleString()} ฿</div>
+                        <div class="buy-btn">ซื้อเลย</div>
+                    </div>
+                </div>
+            `).join('');
+
+            } catch (e) { console.error(e); }
+        }
+
+        function showPayment(title, amount) {
+            const modal = document.getElementById('payment-modal');
+            const qrContainer = document.getElementById('hidden-qr-container');
+            qrContainer.innerHTML = '';
+
+            const payload = generatePromptPayPayload(settings.promptpay_id, amount);
+
+            const qrcode = new QRCode(qrContainer, {
+                text: payload,
+                width: 512,
+                height: 512,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // Wait for QR to be generated
+            setTimeout(() => {
+                const qrCanvas = qrContainer.querySelector('canvas');
+                createPremiumSlip(qrCanvas, settings.promptpay_id, amount);
+                modal.style.display = 'flex';
+            }, 100);
+        }
+
+        function closeModal() {
+            document.getElementById('payment-modal').style.display = 'none';
+        }
+
+        // Init
+        preloadIcons();
+        loadStore();
+    </script>
+
+</body>
+
+</html>
