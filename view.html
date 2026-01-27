@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ดูสินค้า - Premium Store</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Noto+Sans+Thai:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary: #8DEB2D;
+            --bg: #0F1115;
+            --surface: #1A1D24;
+            --text: #FFFFFF;
+            --text-muted: #A0AEC0;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        .main-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 40px;
+        }
+
+        @media (max-width: 1000px) {
+            .main-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-sidebar {
+                position: static !important;
+                width: 100% !important;
+                margin-top: 40px;
+            }
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(141, 235, 45, 0.1);
+            color: var(--primary);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .meta-info {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 60px 0;
+        }
+
+        .content-body {
+            font-size: 1.1rem;
+            color: #E2E8F0;
+        }
+
+        .content-body img {
+            max-width: 100%;
+            border-radius: 20px;
+            margin: 30px 0;
+        }
+
+        /* Sidebar styles */
+        .payment-sidebar {
+            position: sticky;
+            top: 40px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .payment-sidebar h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        #slip-canvas {
+            width: 100%;
+            border-radius: 16px;
+            background: white;
+        }
+
+        .contact-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-chat {
+            padding: 12px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .btn-messenger {
+            background: #0084FF;
+            color: white;
+        }
+
+        .btn-line {
+            background: #06C755;
+            color: white;
+        }
+
+        .payment-info {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        footer {
+            margin-top: 100px;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main-wrapper">
+        <div class="container">
+            <a href="index.html"
+                style="color: var(--text-muted); text-decoration: none; margin-bottom: 30px; display: inline-block;">←
+                กลับหน้าร้าน</a>
+            <div id="article-view">
+                <div class="article-header">
+                    <span class="category-badge">Product Details</span>
+                    <h1 id="title">กำลังโหลด...</h1>
+                    <div class="meta-info">ราคา: <span id="price-text">...</span> ฿</div>
+                </div>
+                <div class="divider"></div>
+                <div class="content-body" id="content">
+                    <!-- Content will load here -->
+                </div>
+            </div>
+            <footer>
+                <p>© <span id="year"></span> แหล่งรวมสคริปต์เจ๋งๆ ระดับพรีเมียม สงวนลิขสิทธิ์ทุกประการ</p>
+            </footer>
+        </div>
+
+        <aside class="payment-sidebar">
+            <h3>💳 ช่องทางการซื้อ</h3>
+            <canvas id="slip-canvas"></canvas>
+            <div class="payment-info">
+                ยอดโอน: <b id="price-sidebar" style="color:var(--primary)">...</b> บาท
+            </div>
+            <div class="contact-btns">
+                <a href="https://line.me/ti/p/gqIluRmdJ_" target="_blank" class="btn-chat btn-line">🟢 แจ้งโอนทาง
+                    LINE</a>
+                <a href="https://www.facebook.com/profile.php?id=61587141776821" target="_blank"
+                    class="btn-chat btn-messenger">🔵 แจ้งโอนทาง Messenger</a>
+            </div>
+            <div style="margin-top: 20px; font-size: 0.8rem; color: var(--text-muted);">LINE ID: artap5321</div>
+        </aside>
+    </div>
+
+    <div id="hidden-qr-container" style="display:none;"></div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // --- PromptPay Logic ---
+        const BANK_ICONS_REPO = "https://raw.githubusercontent.com/casperstack/thai-banks-logo/master/icons/";
+        const BANK_FILES = ['KBANK.png', 'SCB.png', 'BBL.png', 'KTB.png', 'BAY.png'];
+        const loadedIcons = {};
+
+        function preloadIcons() {
+            BANK_FILES.forEach(file => {
+                const img = new Image();
+                img.crossOrigin = "Anonymous";
+                img.src = BANK_ICONS_REPO + file;
+                loadedIcons[file] = img;
+            });
+        }
+
+        function crc16(data) {
+            let crc = 0xFFFF;
+            for (let i = 0; i < data.length; i++) {
+                let x = ((crc >> 8) ^ data.charCodeAt(i)) & 0xFF;
+                x ^= x >> 4;
+                crc = ((crc << 8) ^ (x << 12) ^ (x << 5) ^ x) & 0xFFFF;
+            }
+            return crc.toString(16).toUpperCase().padStart(4, '0');
+        }
+
+        function formatTag(id, value) { return id + value.length.toString().padStart(2, '0') + value; }
+
+        function generatePromptPayPayload(id, amount = 0) {
+            let cleanId = id.replace(/[^0-9]/g, '');
+            let target = cleanId.startsWith('0') && cleanId.length === 10 ? "0066" + cleanId.substring(1) : cleanId;
+            let accType = (cleanId.length >= 13 && !cleanId.startsWith('0')) ? '02' : '01';
+            const subChunk = formatTag('00', 'A000000677010111') + formatTag(accType, target);
+            let p = formatTag('00', '01') + formatTag('01', '11') + formatTag('29', subChunk) + formatTag('53', '764') + formatTag('58', 'TH');
+            if (amount > 0) p += formatTag('54', parseFloat(amount).toFixed(2));
+            p += '6304' + crc16(p + '6304');
+            return p;
+        }
+
+        function createPremiumSlip(qrCanvas, id, amount) {
+            const canvas = document.getElementById('slip-canvas');
+            const ctx = canvas.getContext('2d');
+            const W = 400, H = 600;
+            canvas.width = W; canvas.height = H;
+            const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+            bgGrad.addColorStop(0, '#f8f9fa'); bgGrad.addColorStop(1, '#e9ecef');
+            ctx.fillStyle = bgGrad; ctx.fillRect(0, 0, W, H);
+            ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(W, 0); ctx.lineTo(W, 140);
+            ctx.bezierCurveTo(W, 140, W / 2, 170, 0, 140); ctx.closePath();
+            const headGrad = ctx.createLinearGradient(0, 0, W, 140);
+            headGrad.addColorStop(0, '#003366'); headGrad.addColorStop(1, '#0056b3');
+            ctx.fillStyle = headGrad; ctx.fill();
+            ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center'; ctx.font = 'bold 24px sans-serif';
+            ctx.fillText('สแกนชำระเงิน', W / 2, 50);
+            const cardY = 110, cardH = 80, cardW = 320, cardX = (W - cardW) / 2;
+            ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.roundRect(cardX, cardY, cardW, cardH, 16); ctx.fill();
+            ctx.textAlign = 'center'; ctx.font = 'bold 36px sans-serif'; ctx.fillStyle = '#00467f';
+            ctx.fillText(parseFloat(amount).toLocaleString('en-US') + ' ฿', W / 2, cardY + cardH / 2 + 10);
+            const qrSize = 240, qrY = 220, qrX = (W - qrSize) / 2;
+            ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.roundRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20, 12); ctx.fill();
+            if (qrCanvas) ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+            ctx.fillStyle = '#1e3a8a'; ctx.font = 'bold 16px sans-serif';
+            ctx.fillText('PromptPay', W / 2, qrY + qrSize + 40);
+            ctx.fillStyle = '#64748b'; ctx.font = '14px monospace';
+            ctx.fillText(id, W / 2, qrY + qrSize + 60);
+        }
+
+        async function loadContent() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            if (!id) { window.location.href = 'index.html'; return; }
+
+            try {
+                const res = await fetch(`data/content/${id}.json`);
+                if (!res.ok) throw new Error('Not found');
+                const data = await res.json();
+
+                document.title = data.title + " - Premium Store";
+                document.getElementById('title').textContent = data.title;
+                document.getElementById('price-text').textContent = parseFloat(data.price).toLocaleString();
+                document.getElementById('price-sidebar').textContent = parseFloat(data.price).toLocaleString();
+                document.getElementById('content').innerHTML = data.content;
+
+                // Generate QR
+                preloadIcons();
+                const pId = "0988573074";
+                const amount = parseFloat(data.price);
+                const payload = generatePromptPayPayload(pId, amount);
+                const qrContainer = document.getElementById('hidden-qr-container');
+                new QRCode(qrContainer, { text: payload, width: 512, height: 512 });
+                setTimeout(() => {
+                    const qrCanvas = qrContainer.querySelector('canvas');
+                    createPremiumSlip(qrCanvas, pId, amount);
+                }, 500);
+
+            } catch (e) {
+                document.getElementById('article-view').innerHTML = "<h1>❌ ไม่พบข้อมูลสินค้านี้</h1><p>กรุณากลับไปที่หน้าร้านแล้วเลือกใหม่อีกครั้ง</p>";
+            }
+        }
+
+        loadContent();
+    </script>
+</body>
+
+</html>

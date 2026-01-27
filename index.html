@@ -85,6 +85,12 @@
             font-size: 1.4rem;
             font-weight: 700;
             margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-word;
         }
 
         .product-desc {
@@ -92,6 +98,13 @@
             font-size: 0.95rem;
             margin-bottom: 25px;
             flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-word;
+            line-height: 1.5;
         }
 
         .product-footer {
@@ -123,7 +136,7 @@
     <div class="container">
         <header>
             <h1 class="hero-title">หน้าร้านค้า</h1>
-            <p class="hero-sub" id="store-name">แหล่งรวมความรู้และสคริปต์เจ๋งๆ เฉพาะคุณ</p>
+            <p class="hero-sub" id="store-name">แหล่งรวมสคริปต์เจ๋งๆ เฉพาะคุณ</p>
         </header>
 
         <div class="products-grid" id="products-container">
@@ -145,7 +158,7 @@
                 const container = document.getElementById('products-container');
 
                 container.innerHTML = products.map(p => `
-                    <a href="view.php?id=${p.id}" class="product-card">
+                    <a href="view.html?id=${p.id}" class="product-card">
                         <div class="product-title">${p.title}</div>
                         <div class="product-desc">${p.description}</div>
                         <div class="product-footer">
