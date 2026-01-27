@@ -59,7 +59,7 @@
 
         .article-header {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 30px;
         }
 
         .category-badge {
@@ -88,7 +88,7 @@
         .divider {
             height: 1px;
             background: var(--border);
-            margin: 60px 0;
+            margin: 20px 0;
         }
 
         .content-body {
@@ -100,6 +100,33 @@
             max-width: 100%;
             border-radius: 20px;
             margin: 30px 0;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(141, 235, 45, 0.1);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: 1px solid rgba(141, 235, 45, 0.2);
+            transition: all 0.3s;
+        }
+
+        .tag-pill:hover {
+            transform: scale(1.05);
+            background: rgba(141, 235, 45, 0.2);
         }
 
         /* Sidebar styles */
@@ -160,6 +187,15 @@
             border-radius: 12px;
         }
 
+        /* Center sidebar on mobile */
+        @media (max-width: 1000px) {
+            .payment-sidebar {
+                max-width: 450px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
         footer {
             margin-top: 100px;
             padding: 40px 0;
@@ -183,11 +219,12 @@
                     <span class="category-badge">Product Details</span>
                     <h1 id="title">กำลังโหลด...</h1>
                     <div class="meta-info">ราคา: <span id="price-text">...</span> ฿</div>
+                    <div class="tags-container" id="tags-list"></div>
                 </div>
-                <div class="divider"></div>
-                <div class="content-body" id="content">
-                    <!-- Content will load here -->
-                </div>
+            </div>
+            <div class="divider"></div>
+            <div class="content-body" id="content">
+                <!-- Content will load here -->
             </div>
             <footer>
                 <p>© <span id="year"></span> แหล่งรวมสคริปต์เจ๋งๆ ระดับพรีเมียม สงวนลิขสิทธิ์ทุกประการ</p>
@@ -203,8 +240,8 @@
             <div class="contact-btns">
                 <a href="https://line.me/ti/p/gqIluRmdJ_" target="_blank" class="btn-chat btn-line">🟢 แจ้งโอนทาง
                     LINE</a>
-                <a href="https://www.facebook.com/profile.php?id=61587141776821" target="_blank"
-                    class="btn-chat btn-messenger">🔵 แจ้งโอนทาง Messenger</a>
+                <a href="https://m.me/61587141776821" target="_blank" class="btn-chat btn-messenger">🔵 แจ้งโอนทาง
+                    Messenger</a>
             </div>
             <div style="margin-top: 20px; font-size: 0.8rem; color: var(--text-muted);">LINE ID: artap5321</div>
         </aside>
@@ -295,6 +332,18 @@
                 document.getElementById('price-text').textContent = parseFloat(data.price).toLocaleString();
                 document.getElementById('price-sidebar').textContent = parseFloat(data.price).toLocaleString();
                 document.getElementById('content').innerHTML = data.content;
+
+                // Render Tags
+                const tagsContainer = document.getElementById('tags-list');
+                const icons = {
+                    'HTML': '🌐', 'PHP': '🐘', 'NODE.JS': '🟢', 'Addon Chrome': '🧩',
+                    'Python': '🐍', 'Javascript': '📜', 'Playwright': '🎭', 'AI': '🤖'
+                };
+                if (data.tags && data.tags.length > 0) {
+                    tagsContainer.style.alignItems = 'center';
+                    tagsContainer.innerHTML = '<span style="color: var(--text-muted); font-size: 0.9rem; margin-right: 12px;">ใช้ภาษาเขียน:</span>' +
+                        data.tags.map(t => `<span class="tag-pill">${icons[t] || ''} ${t}</span>`).join('');
+                }
 
                 // Generate QR
                 preloadIcons();
