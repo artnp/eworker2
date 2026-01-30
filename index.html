@@ -129,6 +129,88 @@
             font-weight: 700;
             font-size: 0.85rem;
         }
+
+        /* Service Banner Styles */
+        .services-banner {
+            background: linear-gradient(135deg, rgba(26, 29, 36, 0.8) 0%, rgba(15, 17, 21, 0.9) 100%);
+            border: 1px solid var(--primary);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(141, 235, 45, 0.1);
+        }
+
+        .services-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), #fff);
+        }
+
+        .service-content h2 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .service-content p {
+            color: var(--text-dim);
+            margin-bottom: 25px;
+            max-width: 800px;
+        }
+
+        .service-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .service-list li {
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-hire {
+            display: inline-block;
+            background: #fff;
+            color: #000;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 800;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-hire:hover {
+            transform: scale(1.05);
+            background: var(--primary);
+            box-shadow: 0 5px 25px rgba(141, 235, 45, 0.4);
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -138,6 +220,24 @@
             <h1 class="hero-title">หน้าร้านค้า</h1>
             <p class="hero-sub" id="store-name">แหล่งรวมสคริปต์เจ๋งๆ เฉพาะคุณ</p>
         </header>
+
+        <!-- New Service Section for Promotion -->
+        <div class="services-banner fade-in">
+            <div class="service-content">
+                <h2>🚀 รับเขียนโปรแกรม & ระบบ Automation</h2>
+                <p>อย่าปล่อยให้งานซ้ำซากจำเจ ทำลายเวลาชีวิตของคุณ! ผมเชี่ยวชาญการสร้าง <b>Chrome Extension</b>, <b>Web
+                        Scraping</b> และ <b>Bot ช่วยงานออนไลน์</b></p>
+                <ul class="service-list">
+                    <li>✅ รับทำ Chrome Extension ส่วนตัว</li>
+                    <li>✅ ระบบดูดข้อมูลสินค้า Shopee/Lazada/TikTok</li>
+                    <li>✅ บอทโพสต์ Facebook / Social Media อัตโนมัติ</li>
+                    <li>✅ แก้ไข/ปรับปรุงสคริปต์ PHP, JS, Python</li>
+                </ul>
+                <a href="https://line.me/ti/p/gqIluRmdJ_" target="_blank" class="btn-hire">💬 ติดต่อจ้างงาน /
+                    ปรึกษาฟรี</a>
+            </div>
+        </div>
+
 
         <div class="products-grid" id="products-container">
             <!-- Loading... -->
