@@ -213,6 +213,97 @@
             color: var(--text-muted);
             font-size: 0.9rem;
         }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Sticky Bottom Bar for Mobile */
+        .mobile-sticky-bar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--surface);
+            padding: 15px 20px;
+            border-top: 1px solid var(--border);
+            z-index: 100;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .sticky-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .btn-sticky-buy {
+            background: var(--primary);
+            color: black;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        @media (max-width: 1000px) {
+            .mobile-sticky-bar {
+                display: flex;
+            }
+
+            body {
+                padding-bottom: 80px;
+            }
+
+            /* Space for sticky bar */
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            margin-top: 60px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .faq-header {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .faq-item {
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 15px;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            color: var(--text-muted);
+            margin-top: 10px;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .faq-item.active .faq-question {
+            color: white;
+        }
     </style>
 </head>
 
@@ -227,13 +318,33 @@
                 <div class="article-header">
                     <span class="category-badge">Product Details</span>
                     <h1 id="title">กำลังโหลด...</h1>
-                    <div class="meta-info">ราคา: <span id="price-text">...</span> ฿</div>
                     <div class="tags-container" id="tags-list"></div>
                 </div>
             </div>
             <div class="divider"></div>
             <div class="content-body" id="content">
                 <!-- Content will load here -->
+            </div>
+
+            <div class="faq-section">
+                <h2 class="faq-header">❓ คำถามที่พบบ่อย (FAQ)</h2>
+                <div class="faq-item">
+                    <div class="faq-question">จ่ายเงินแล้วได้ของเลยไหม? <span>▼</span></div>
+                    <div class="faq-answer">ชำระแล้วรบกวนลูกพี่แจ้งสลิปผ่านทางแชทได้เลยนะ จะส่งลิ้งค์ดาวน์โหลดให้ในแชท
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">ติดตั้งไม่เป็นมีสอนไหม? <span>▼</span></div>
+                    <div class="faq-answer">ผมได้ออกแบบโปรแกรมให้รองรับการทำงานแบบง่ายสุด ๆ ไม่ซับซ้อน
+                        หากคุณพี่ไม่สามารถรันหรือติดตั้งได้ เดี๋ยวผมจะสอนให้แบบจับมือทำเลยตัวต่อตัวเลย มีอะไรเจ๋ง ๆ
+                        เพิ่มเติมพร้อมแนะนำแบบไม่มีกั๊กเลย</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">ใช้ได้ตลอดชีพไหม หรือต้องจ่ายรายเดือนเเพิ่มอะไรอีกไหม? <span>▼</span>
+                    </div>
+                    <div class="faq-answer">ใช้ได้ตลอดชีพไปเลย
+                        ไม่มีค่าบริการผูกมัดใด ๆ ทั้งสิ้น ไม่ต้องห่วงกังวลกับเรื่องนี้เลย</div>
+                </div>
             </div>
             <footer>
                 <p>© <span id="year"></span> แหล่งรวมสคริปต์เจ๋งๆ ระดับพรีเมียม สงวนลิขสิทธิ์ทุกประการ</p>
@@ -254,6 +365,13 @@
             </div>
             <div style="margin-top: 20px; font-size: 0.8rem; color: var(--text-muted);">LINE ID: artap5321</div>
         </aside>
+    </div>
+
+    <!-- Mobile Sticky Bar -->
+    <div class="mobile-sticky-bar">
+        <div class="sticky-price" id="sticky-price">... ฿</div>
+        <a href="#slip-canvas" class="btn-sticky-buy"
+            onclick="document.querySelector('.payment-sidebar').scrollIntoView({behavior:'smooth'})">🛒 ซื้อเลย</a>
     </div>
 
     <div id="hidden-qr-container" style="display:none;"></div>
@@ -338,9 +456,9 @@
 
                 document.title = data.title + " - Premium Store";
                 document.getElementById('title').textContent = data.title;
-                document.getElementById('price-text').textContent = parseFloat(data.price).toLocaleString();
                 document.getElementById('price-sidebar').textContent = parseFloat(data.price).toLocaleString();
                 document.getElementById('content').innerHTML = data.content;
+                document.getElementById('sticky-price').textContent = parseFloat(data.price).toLocaleString() + ' ฿';
 
                 // Render Tags
                 const tagsContainer = document.getElementById('tags-list');
@@ -370,6 +488,13 @@
                 document.getElementById('article-view').innerHTML = "<h1>❌ ไม่พบข้อมูลสินค้านี้</h1><p>กรุณากลับไปที่หน้าร้านแล้วเลือกใหม่อีกครั้ง</p>";
             }
         }
+
+        // FAQ Toggle
+        document.querySelectorAll('.faq-question').forEach(item => {
+            item.addEventListener('click', () => {
+                item.parentElement.classList.toggle('active');
+            });
+        });
 
         loadContent();
     </script>
