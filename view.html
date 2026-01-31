@@ -507,25 +507,7 @@
                 <div class="step-badge">1</div>
                 <canvas id="slip-canvas"></canvas>
 
-                <button onclick="downloadQR()" style="
-                    margin-top: 10px;
-                    background: transparent;
-                    border: 1px solid var(--border);
-                    color: var(--text-muted);
-                    padding: 8px 16px;
-                    border-radius: 50px;
-                    font-size: 0.85rem;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 6px;
-                    width: 100%;
-                    transition: all 0.2s;
-                " onmouseover="this.style.borderColor='var(--primary)'; this.style.color='var(--primary)'"
-                    onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-muted)'">
-                    ⬇️ บันทึกรูป QR ลงเครื่อง
-                </button>
+
             </div>
 
             <!-- 2. Upload Slip (Step 2) -->
@@ -625,7 +607,7 @@
         function createPremiumSlip(qrCanvas, id, amount) {
             const canvas = document.getElementById('slip-canvas');
             const ctx = canvas.getContext('2d');
-            const W = 400, H = 550;
+            const W = 400, H = 580;
             canvas.width = W; canvas.height = H;
 
             // Background
@@ -673,6 +655,41 @@
             ctx.fillStyle = '#666666';
             ctx.font = '16px sans-serif';
             ctx.fillText('สแกนผ่านแอปธนาคารได้ทุกธนาคาร', W / 2, 490);
+
+            // Button (Visual only - User clicks the whole canvas or the external button)
+            // But user wants it IN the slip.
+            const btnW = 200, btnH = 40;
+            const btnX = (W - btnW) / 2, btnY = 510;
+
+            // Button Shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.1)';
+            ctx.beginPath();
+            ctx.roundRect(btnX + 2, btnY + 2, btnW, btnH, 20);
+            ctx.fill();
+
+            // Button BG
+            ctx.fillStyle = '#f8f9fa';
+            ctx.beginPath();
+            ctx.roundRect(btnX, btnY, btnW, btnH, 20);
+            ctx.fill();
+
+            // Button Border
+            ctx.strokeStyle = '#dee2e6';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Button Text
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 16px sans-serif';
+            ctx.fillText('⬇️ บันทึกรูปภาพ', W / 2, btnY + 26);
+
+            // Add click listener to canvas for this button area
+            // Note: This adds a listener every time createPremiumSlip results. Ideally should be once.
+            // But since this function runs once per load usually, it's okay.
+            canvas.style.cursor = 'pointer';
+            canvas.onclick = function (e) {
+                downloadQR();
+            };
 
 
         }
