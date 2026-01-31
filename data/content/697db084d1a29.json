@@ -1,11 +1,11 @@
 {
     "id": "697db084d1a29",
     "title": "ตัวแก้ Qr code ปลอมในสลิปให้สแกนไม่ติด",
-    "content": "<h2>ตัวแก้ Qr code ปลอมในสลิปให้สแกนไม่ติด<\/h2><br><ul><li>ระบบทำงานอัตโนมัติเมื่ออัพโหลดภาพสลิป<\/li><li>ระบุหาตำแหน่ง Qr code จริง<\/li><li>สร้าง Qr code ปลอมขึ้นมาทับ<\/li><li>ปรับความหนาแน่นของพิกเซล์แถบใน Qr code ได้เอง<\/li><li>ปรับเพิ่ม-ลดขนาด ได้ด้วยตนเอง<\/li><\/ul><br><h3>วิธีการใช้งาน:<\/h3><ul><li>ไฟล์เป็น HTML ไม่ต้องติดตั้งโปรแกรม เปิดผ่านเว็บเบราว์เซอร์ได้เลย!<\/li><li><strong>ลากไฟล์สลิป<\/strong> (Drag &amp; Drop) หรือกดปุ่ม \"<strong>Upload Slip\"<\/strong><\/li><li>กดปุ่ม <strong>\"บันทึกรูปภาพ (Save Image)\"<\/strong> เพื่อดาวน์โหลดรูปไปใช้งาน<\/li><\/ul><br>",
+    "content": "<iframe class=\"ql-video\" frameborder=\"0\" allowfullscreen=\"true\" src=\"https:\/\/www.youtube.com\/embed\/wzBbp6EJJpQ?showinfo=0\"><\/iframe><h2><br><\/h2><h2>สคริปต์แก้ Qr code ปลอมในสลิปให้สแกนไม่ติด<\/h2><br><ul><li>ระบบทำงานอัตโนมัติเมื่ออัพโหลดภาพสลิป<\/li><li>ระบุหาตำแหน่ง Qr code จริง<\/li><li>สร้าง Qr code ปลอมขึ้นมาทับ<\/li><li>ปรับความหนาแน่นของพิกเซล์แถบใน Qr code ได้เอง<\/li><li>ปรับเพิ่ม-ลดขนาด ได้ด้วยตนเอง<\/li><\/ul><br><h3>วิธีการใช้งาน:<\/h3><ul><li>ไฟล์เป็น HTML ไม่ต้องติดตั้งโปรแกรม เปิดผ่านเว็บเบราว์เซอร์ได้เลย!<\/li><li><strong>ลากไฟล์สลิป<\/strong> (Drag &amp; Drop) หรือกดปุ่ม \"<strong>Upload Slip\"<\/strong><\/li><li>กดปุ่ม <strong>\"บันทึกรูปภาพ (Save Image)\"<\/strong> เพื่อดาวน์โหลดรูปไปใช้งาน<\/li><\/ul><br>",
     "price": "100",
     "tags": [
         "HTML",
         "Javascript"
     ],
-    "updated_at": "2026-01-31 07:34:28"
+    "updated_at": "2026-01-31 07:37:45"
 }
