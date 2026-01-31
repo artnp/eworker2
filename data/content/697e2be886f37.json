@@ -1,0 +1,11 @@
+{
+    "id": "697e2be886f37",
+    "title": "ระบบสร้างสลิปธนาคาร QR Payment แจ้งยอดโอนเงินอัตโนมัติ",
+    "content": "<iframe class=\"ql-video\" frameborder=\"0\" allowfullscreen=\"true\" src=\"https:\/\/www.youtube.com\/embed\/8stBE2hgyLs?showinfo=0\"><\/iframe><h3>สร้างสลิปโอนเงินให้ลูกค้าทันใจ:<\/h3><ul><li><span style=\"color: inherit;\">มาตรฐานธนาคาร<\/span>&nbsp;ใช้ระบบ Generate Local Code PromptPay มาตรฐานเดียวกับแอปธนาคาร มั่นใจได้ 100%<\/li><li><span style=\"color: inherit;\">รองรับทุกรูปแบบ<\/span>&nbsp;กรอกข้อมูลพร้อมเพย์ได้ทั้ง&nbsp;<span style=\"color: inherit;\">เบอร์โทรศัพท์<\/span>&nbsp;และ&nbsp;<span style=\"color: inherit;\">เลขบัตรประชาชน<\/span><\/li><li><span style=\"color: inherit;\">ระบบจดจำข้อมูลอัจฉริยะ<\/span>&nbsp;ไม่ต้องพิมพ์ใหม่ทุกครั้ง! ระบบจดจำข้อมูลร้านใน Browser (Local Storage) รีเฟรชหรือปิดเปิดใหม่ ข้อมูลก็ยังอยู่ครบ<\/li><li><span style=\"color: inherit;\">Auto-Copy สุดไว<\/span>&nbsp;แค่พิมพ์ยอดเงินปุ๊บ ระบบ&nbsp;<span style=\"color: inherit;\">ก๊อปปี้รูปสลิปให้อัตโนมัติ<\/span>&nbsp;พร้อมกดวางในแชทส่งลูกค้าได้ทันที (ลดเวลาตอบแชทไปเยอะ!)<\/li><li>&nbsp;<span style=\"color: inherit;\">ล็อกยอดเงินได้เป๊ะ<\/span>&nbsp;หมดปัญหาลูกค้าเนียนโอนไม่ครบ! ตัว QR Code จะ&nbsp;<span style=\"color: inherit;\">บังคับโอนตามยอดที่กำหนด<\/span>&nbsp;ฝั่งลูกค้าสแกนแล้วยอดขึ้นทันที แก้ไขยอดเองไม่ได้<\/li><li><span style=\"color: inherit;\">ปรับธีมสีได้ตามใจ<\/span>&nbsp;เลือกสีสลิปให้เข้ากับโลโก้หรือสีประจำร้านค้าของคุณได้เลย<\/li><li><span style=\"color: inherit;\">ปลอดภัย 100%<\/span>&nbsp;ข้อมูลส่วนตัวและเลขบัญชี&nbsp;<span style=\"color: inherit;\">ไม่ถูกส่งไปที่ Server ของใครทั้งสิ้น<\/span>&nbsp;ประมวลผลในเครื่องคุณเองล้วนๆ<\/li><\/ul><br><h3>วิธีการใช้งาน:<\/h3><ul><li>ไฟล์เป็น HTML ไม่ต้องติดตั้งโปรแกรม เปิดผ่านเว็บเบราว์เซอร์ได้เลย!<\/li><li><strong>กรอกข้อมูลที่จำเป็นให้เรียบร้อย!<\/strong><\/li><li>พิมพ์ตัวเลขยอดที่ต้องการ จะเข้าในสลิปทันที คัดลอก \/ ดาวน์โหลดเป็นไฟล์รูปพร้อมใช้งาน<\/li><\/ul><br><br>",
+    "price": "30",
+    "tags": [
+        "HTML",
+        "Javascript"
+    ],
+    "updated_at": "2026-01-31 16:20:56"
+}
