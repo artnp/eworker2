@@ -506,6 +506,26 @@
             <div class="step-wrapper" style="margin-bottom: 20px;">
                 <div class="step-badge">1</div>
                 <canvas id="slip-canvas"></canvas>
+
+                <button onclick="downloadQR()" style="
+                    margin-top: 10px;
+                    background: transparent;
+                    border: 1px solid var(--border);
+                    color: var(--text-muted);
+                    padding: 8px 16px;
+                    border-radius: 50px;
+                    font-size: 0.85rem;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
+                    width: 100%;
+                    transition: all 0.2s;
+                " onmouseover="this.style.borderColor='var(--primary)'; this.style.color='var(--primary)'"
+                    onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-muted)'">
+                    ⬇️ บันทึกรูป QR ลงเครื่อง
+                </button>
             </div>
 
             <!-- 2. Upload Slip (Step 2) -->
@@ -844,6 +864,14 @@
                 const mockInput = { files: files };
                 handleSlipUpload(mockInput);
             }
+        }
+
+        function downloadQR() {
+            const canvas = document.getElementById('slip-canvas');
+            const link = document.createElement('a');
+            link.download = 'payment-qr.png';
+            link.href = canvas.toDataURL();
+            link.click();
         }
     </script>
 </body>
