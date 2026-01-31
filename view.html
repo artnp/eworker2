@@ -57,6 +57,17 @@
             width: 100%;
         }
 
+        /* Guide Text Header */
+        .guide-label {
+            color: #FF6B00;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
         .article-header {
             text-align: center;
             margin-bottom: 30px;
@@ -94,20 +105,34 @@
         .content-body {
             font-size: 1.1rem;
             color: #E2E8F0;
+
+            /* Visual Frame for Info */
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            /* Accent line */
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
         }
 
         .content-body img {
             max-width: 100%;
-            border-radius: 20px;
+            border-radius: 12px;
             margin: 30px 0;
+            border: 1px solid var(--border);
         }
 
         .content-body iframe {
             width: 100%;
             aspect-ratio: 16/9;
-            border-radius: 20px;
-            margin: 30px 0 5px 0;
-            border: none;
+            border-radius: 16px;
+            margin: 30px 0 40px 0;
+
+            /* Visual Frame for Video */
+            border: 3px solid #FF6B00;
+            box-shadow: 0 15px 50px rgba(255, 107, 0, 0.2);
+            background: black;
         }
 
         .tags-container {
@@ -316,12 +341,14 @@
                 กลับหน้าร้าน</a>
             <div id="article-view">
                 <div class="article-header">
-                    <span class="category-badge">Product Details</span>
+                    <span class="category-badge">หน้าสินค้า</span>
                     <h1 id="title">กำลังโหลด...</h1>
                     <div class="tags-container" id="tags-list"></div>
                 </div>
             </div>
+
             <div class="divider"></div>
+
             <div class="content-body" id="content">
                 <!-- Content will load here -->
             </div>
