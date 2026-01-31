@@ -144,7 +144,8 @@
 
         .product-card {
             background: var(--card-bg);
-            border: 1px solid var(--border);
+            border: 2px solid #FF6B00;
+            /* Border Orange */
             border-radius: 20px;
             padding: 24px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -154,12 +155,14 @@
             flex-direction: column;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 0 15px rgba(255, 107, 0, 0.1);
         }
 
         .product-card:hover {
             transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: #FF8F40;
+            /* Lighter Orange */
+            box-shadow: 0 20px 40px rgba(255, 107, 0, 0.25);
         }
 
         .product-card::before {
@@ -313,6 +316,41 @@
                 transform: translateY(0);
             }
         }
+
+        /* Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, #1A1D24 25%, #23262F 50%, #1A1D24 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .skeleton-title {
+            height: 28px;
+            margin-bottom: 15px;
+            width: 70%;
+        }
+
+        .skeleton-desc {
+            height: 16px;
+            margin-bottom: 8px;
+        }
+
+        .skeleton-price {
+            height: 24px;
+            width: 40%;
+            margin-top: auto;
+        }
     </style>
 </head>
 
@@ -391,6 +429,21 @@
 
     <script>
         async function loadStore() {
+            const container = document.getElementById('products-container');
+
+            // Show Skeleton Loading immediately
+            container.innerHTML = Array(6).fill(0).map(() => `
+                <div class="product-card" style="pointer-events: none;">
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-desc" style="width: 100%;"></div>
+                    <div class="skeleton skeleton-desc" style="width: 90%;"></div>
+                    <div class="skeleton skeleton-desc" style="width: 60%;"></div>
+                    <div class="product-footer" style="margin-top: 20px;">
+                        <div class="skeleton skeleton-price"></div>
+                    </div>
+                </div>
+            `).join('');
+
             try {
                 // Settings
                 const setRes = await fetch('data/settings.json');
@@ -402,7 +455,9 @@
                 // Products
                 const res = await fetch('data/products_public.json');
                 const products = await res.json();
-                const container = document.getElementById('products-container');
+
+                // Sort products: Newest first (leftmost in grid)
+                products.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
 
                 container.innerHTML = products.map(p => `
                     <a href="view.html?id=${p.id}" class="product-card">
