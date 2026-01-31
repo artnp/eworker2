@@ -187,21 +187,29 @@
 
         .contact-btns {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 24px;
+            flex-direction: row;
+            /* Side by side */
+            gap: 10px;
+            margin-top: 10px;
         }
 
         .btn-chat {
-            padding: 12px;
+            flex: 1;
+            /* Equal width */
+            padding: 8px 4px;
             border-radius: 12px;
             text-decoration: none;
             font-weight: 700;
             display: flex;
+            flex-direction: column;
+            /* Stack Content */
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            font-size: 0.95rem;
+            gap: 2px;
+            font-size: 0.85rem;
+            line-height: 1.25;
+            white-space: normal;
+            /* Allow wrapping if needed */
         }
 
         .btn-messenger {
@@ -326,8 +334,79 @@
             display: block;
         }
 
+        .faq-answer a {
+            color: var(--primary);
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
         .faq-item.active .faq-question {
             color: white;
+        }
+
+        /* Verify & Download Button Styles */
+        .btn-verify {
+            background: orange;
+            /* Neon Green */
+            color: black;
+            /* High contrast black text */
+            border: 2px dashed #ffffff;
+            width: 100%;
+            padding: 14px;
+            /* Larger click area */
+            border-radius: 12px;
+            font-weight: 800;
+            /* Extra bold */
+            font-size: 1.1rem;
+            /* Larger font */
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            box-shadow: 0 4px 15px rgba(141, 235, 45, 0.3);
+            /* Green glow */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .btn-verify:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.3);
+            border-style: solid;
+        }
+
+        .btn-verify:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-download-now {
+            background: var(--primary);
+            color: black;
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 800;
+            text-decoration: none;
+            font-size: 1.1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(141, 235, 45, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(141, 235, 45, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(141, 235, 45, 0);
+            }
         }
     </style>
 </head>
@@ -357,13 +436,18 @@
                 <h2 class="faq-header">❓ คำถามที่พบบ่อย (FAQ)</h2>
                 <div class="faq-item">
                     <div class="faq-question">จ่ายเงินแล้วได้ของเลยไหม? <span>▼</span></div>
-                    <div class="faq-answer">ชำระแล้วรบกวนลูกพี่แจ้งสลิปผ่านทางแชทได้เลยนะ จะส่งลิ้งค์ดาวน์โหลดให้ในแชท
+                    <div class="faq-answer">ได้เลยครับ!! <br><b><u>สแกนจ่าย</u></b> > <b><u>คุณพี่อัพโหลดสลิป</u></b>
+                        >
+                        ระบบจะยืนบันตรวจสลิปว่าถูกต้องไหม แล้วจะ<b><u>ส่งลิ้งค์ดาวน์โหลดให้อัตโนมัติ</u></b>
+                        <br><br>**หากประสบปัญหาให้แจ้งเข้ามาได้ที่ LINE: <a href="https://line.me/ti/p/gqIluRmdJ_"
+                            target="_blank">artap5321</a>
+                        หรือ Facebook: <a href="https://m.me/61587141776821" target="_blank">E-Worker</a>
                     </div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question">ติดตั้งไม่เป็นมีสอนไหม? <span>▼</span></div>
                     <div class="faq-answer">ผมได้ออกแบบโปรแกรมให้รองรับการทำงานแบบง่ายสุด ๆ ไม่ซับซ้อน
-                        หากคุณพี่ไม่สามารถรันหรือติดตั้งได้ เดี๋ยวผมจะสอนให้แบบจับมือทำเลยตัวต่อตัวเลย มีอะไรเจ๋ง ๆ
+                        หากคุณพี่ไม่สามารถรันหรือติดตั้งได้ เดี๋ยวผมจะสอนให้แบบจับมือทำให้เลย แบบตัวต่อตัว มีอะไรเจ๋ง ๆ
                         เพิ่มเติมพร้อมแนะนำแบบไม่มีกั๊กเลย</div>
                 </div>
                 <div class="faq-item">
@@ -380,46 +464,109 @@
 
         <aside class="payment-sidebar">
             <h3>💳 ช่องทางการซื้อ</h3>
-            <canvas id="slip-canvas"></canvas>
-            <div class="payment-info">
-                ยอดโอน: <b id="price-sidebar" style="color:var(--primary)">...</b> บาท
+
+
+            <!-- 1. Process Guide (Restored) -->
+
+            <!-- CSS for Step Badges -->
+            <style>
+                .step-wrapper {
+                    position: relative;
+                }
+
+                .step-badge {
+                    position: absolute;
+                    top: -10px;
+                    left: -10px;
+                    width: 32px;
+                    height: 32px;
+                    background: #FF4444;
+                    color: white;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 800;
+                    font-size: 1.1rem;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+                    z-index: 10;
+                    border: 2px solid #1A1D24;
+                    /* Match bg color for cutout effect */
+                }
+            </style>
+
+            <!-- 1. QR Code (Step 1) -->
+            <div class="step-wrapper" style="margin-bottom: 20px;">
+                <div class="step-badge">1</div>
+                <canvas id="slip-canvas"></canvas>
             </div>
-            <div class="contact-btns">
-                <a href="https://line.me/ti/p/gqIluRmdJ_" target="_blank" class="btn-chat btn-line">🟢 แจ้งโอนทาง
-                    LINE</a>
-                <a href="https://m.me/61587141776821" target="_blank" class="btn-chat btn-messenger">🔵 แจ้งโอนทาง
-                    Messenger</a>
+
+            <!-- 2. Upload Slip (Step 2) -->
+            <div id="verify-section" style="margin-top: 15px; border-top: 1px solid var(--border);">
+
+                <div style="font-size: 0.8rem; color: #FFD700; margin-bottom: 15px; font-weight: 500;">
+                    📍 สำคัญ: ต้องแนบสลิปภายใน 1 ชม. หลังโอน
+                </div>
+                <input type="file" id="slip-upload" accept="image/*" style="display: none;"
+                    onchange="handleSlipUpload(this)">
+
+                <div class="step-wrapper">
+                    <div class="step-badge" style="z-index: 20;">2</div>
+                    <button onclick="document.getElementById('slip-upload').click()" class="btn-verify">
+                        🧾 อัปโหลดสลิป (เพื่อรับไฟล์)
+                    </button>
+                </div>
+                <div id="verify-status" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);"></div>
             </div>
-            <div style="margin-top: 20px; font-size: 0.8rem; color: var(--text-muted);">LINE ID: artap5321</div>
+
+            <!-- 3. Download Section -->
+            <div id="download-section" class="hidden" style="margin-top: 20px;">
+                <div style="color: #4CAF50; margin-bottom: 10px; font-weight: bold; font-size: 1.1rem;">✅
+                    ยืนยันยอดเงินสำเร็จ!</div>
+                <a href="#" id="final-download-link" class="btn-download-now" target="_blank" rel="nofollow">
+                    📥 ดาวน์โหลดไฟล์ทันที
+                </a>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">ขอบคุณที่อุดหนุนครับ 🙏</p>
+            </div>
+
+            <!-- 4. Contact Buttons (Side by Side & Nofollow) -->
+            <div style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;" id="manual-contact">
+                <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:5px; text-align: left;">⚠️
+                    แจ้งปัญหา / สอบถาม:</div>
+                <div class="contact-btns" style="margin-top: 0;">
+                    <a href="https://line.me/ti/p/gqIluRmdJ_" target="_blank" class="btn-chat btn-line" rel="nofollow">
+                        <span>🟢 LINE</span>
+                        <span style="font-size: 0.75rem; font-weight: 400; opacity: 0.95;">artap5321</span>
+                    </a>
+                    <a href="https://m.me/61587141776821" target="_blank" class="btn-chat btn-messenger" rel="nofollow">
+                        <span>🔵 Facebook</span>
+                        <span style="font-size: 0.75rem; font-weight: 400; opacity: 0.95;">E-Worker</span>
+                    </a>
+                </div>
+            </div>
+
         </aside>
     </div>
 
-    <!-- Mobile Sticky Bar -->
-    <div class="mobile-sticky-bar">
-        <div class="sticky-price" id="sticky-price">... ฿</div>
-        <a href="#slip-canvas" class="btn-sticky-buy"
-            onclick="document.querySelector('.payment-sidebar').scrollIntoView({behavior:'smooth'})">🛒 ซื้อเลย</a>
-    </div>
 
+
+    <!-- Hidden QR Container (For Generation) -->
     <div id="hidden-qr-container" style="display:none;"></div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // --- PromptPay Logic ---
-        const BANK_ICONS_REPO = "https://raw.githubusercontent.com/casperstack/thai-banks-logo/master/icons/";
-        const BANK_FILES = ['KBANK.png', 'SCB.png', 'BBL.png', 'KTB.png', 'BAY.png'];
-        const loadedIcons = {};
+        // Global variables
+        let currentProductData = null;
+        let pIcon = new Image();
+        let bankIcon = new Image();
 
         function preloadIcons() {
-            BANK_FILES.forEach(file => {
-                const img = new Image();
-                img.crossOrigin = "Anonymous";
-                img.src = BANK_ICONS_REPO + file;
-                loadedIcons[file] = img;
-            });
+            bankIcon.src = 'https://cdn-icons-png.flaticon.com/512/2534/2534168.png'; // Generic bank icon (or TTB)
         }
 
+        // 1. PromptPay Payload Generator (Original Working Logic)
         function crc16(data) {
             let crc = 0xFFFF;
             for (let i = 0; i < data.length; i++) {
@@ -434,41 +581,73 @@
 
         function generatePromptPayPayload(id, amount = 0) {
             let cleanId = id.replace(/[^0-9]/g, '');
+            // Correct logic: 08x -> 00668x
             let target = cleanId.startsWith('0') && cleanId.length === 10 ? "0066" + cleanId.substring(1) : cleanId;
             let accType = (cleanId.length >= 13 && !cleanId.startsWith('0')) ? '02' : '01';
+
             const subChunk = formatTag('00', 'A000000677010111') + formatTag(accType, target);
+            // 01 11 means Static (Reuseable), 12 means Dynamic. User snippet used 11.
             let p = formatTag('00', '01') + formatTag('01', '11') + formatTag('29', subChunk) + formatTag('53', '764') + formatTag('58', 'TH');
+
             if (amount > 0) p += formatTag('54', parseFloat(amount).toFixed(2));
             p += '6304' + crc16(p + '6304');
             return p;
         }
 
+        // 2. Draw Premium Slip
         function createPremiumSlip(qrCanvas, id, amount) {
             const canvas = document.getElementById('slip-canvas');
             const ctx = canvas.getContext('2d');
-            const W = 400, H = 600;
+            const W = 400, H = 550;
             canvas.width = W; canvas.height = H;
-            const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-            bgGrad.addColorStop(0, '#f8f9fa'); bgGrad.addColorStop(1, '#e9ecef');
-            ctx.fillStyle = bgGrad; ctx.fillRect(0, 0, W, H);
-            ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(W, 0); ctx.lineTo(W, 140);
-            ctx.bezierCurveTo(W, 140, W / 2, 170, 0, 140); ctx.closePath();
-            const headGrad = ctx.createLinearGradient(0, 0, W, 140);
-            headGrad.addColorStop(0, '#003366'); headGrad.addColorStop(1, '#0056b3');
-            ctx.fillStyle = headGrad; ctx.fill();
-            ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center'; ctx.font = 'bold 24px sans-serif';
-            ctx.fillText('สแกนชำระเงิน', W / 2, 50);
-            const cardY = 110, cardH = 80, cardW = 320, cardX = (W - cardW) / 2;
-            ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.roundRect(cardX, cardY, cardW, cardH, 16); ctx.fill();
-            ctx.textAlign = 'center'; ctx.font = 'bold 36px sans-serif'; ctx.fillStyle = '#00467f';
-            ctx.fillText(parseFloat(amount).toLocaleString('en-US') + ' ฿', W / 2, cardY + cardH / 2 + 10);
-            const qrSize = 240, qrY = 220, qrX = (W - qrSize) / 2;
-            ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.roundRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20, 12); ctx.fill();
-            if (qrCanvas) ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
-            ctx.fillStyle = '#1e3a8a'; ctx.font = 'bold 16px sans-serif';
-            ctx.fillText('PromptPay', W / 2, qrY + qrSize + 40);
-            ctx.fillStyle = '#64748b'; ctx.font = '14px monospace';
-            ctx.fillText(id, W / 2, qrY + qrSize + 60);
+
+            // Background
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, W, H);
+
+            // Header (Thai QR Payment Blue)
+            const blue = '#1A3C6E';
+            ctx.fillStyle = blue;
+            ctx.fillRect(0, 0, W, 100);
+
+            ctx.fillStyle = '#FFFFFF';
+            if (pIcon.complete) {
+                // Draw PromptPay Logo (White BG container)
+                ctx.drawImage(pIcon, 20, 20, 150, 60);
+            }
+
+            // Thai QR Payment Text & Steps
+            ctx.fillStyle = '#FFFFFF';
+            ctx.textAlign = 'center';
+
+            // Link 1: Header
+            ctx.font = 'bold 24px sans-serif';
+            ctx.fillText('ชำระเงินพร้อมเพย์', W / 2, 40);
+
+            // Line 2: Process Guide
+            ctx.font = '18px sans-serif';
+            ctx.fillText('1.สแกนจ่าย ➜ 2.แนบสลิป ➜ 3.รับไฟล์', W / 2, 75);
+
+            // Body
+            const qrSize = 250;
+            const qrX = (W - qrSize) / 2;
+            const qrY = 130;
+
+            if (qrCanvas) {
+                ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+            }
+
+            // Info
+            ctx.fillStyle = '#333333';
+            ctx.font = 'bold 28px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('ยอดชำระ: ' + parseFloat(amount).toLocaleString('en-US') + ' บาท', W / 2, 450);
+
+            ctx.fillStyle = '#666666';
+            ctx.font = '16px sans-serif';
+            ctx.fillText('สแกนผ่านแอปธนาคารได้ทุกธนาคาร', W / 2, 490);
+
+
         }
 
         async function loadContent() {
@@ -480,12 +659,11 @@
                 const res = await fetch(`data/content/${id}.json`);
                 if (!res.ok) throw new Error('Not found');
                 const data = await res.json();
+                currentProductData = data;
 
                 document.title = data.title + " - Premium Store";
                 document.getElementById('title').textContent = data.title;
-                document.getElementById('price-sidebar').textContent = parseFloat(data.price).toLocaleString();
                 document.getElementById('content').innerHTML = data.content;
-                document.getElementById('sticky-price').textContent = parseFloat(data.price).toLocaleString() + ' ฿';
 
                 // Render Tags
                 const tagsContainer = document.getElementById('tags-list');
@@ -501,14 +679,27 @@
 
                 // Generate QR
                 preloadIcons();
-                const pId = "0988573074";
+                const pId = "0988573074"; // PromptPay Number
                 const amount = parseFloat(data.price);
                 const payload = generatePromptPayPayload(pId, amount);
                 const qrContainer = document.getElementById('hidden-qr-container');
-                new QRCode(qrContainer, { text: payload, width: 512, height: 512 });
+                qrContainer.innerHTML = '';
+
+                new QRCode(qrContainer, {
+                    text: payload,
+                    width: 250,
+                    height: 250,
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+
+                // Wait for image render
                 setTimeout(() => {
                     const qrCanvas = qrContainer.querySelector('canvas');
-                    createPremiumSlip(qrCanvas, pId, amount);
+                    if (qrCanvas) {
+                        createPremiumSlip(qrCanvas, id, amount);
+                        // Also update sidebar text
+                        document.getElementById('price-sidebar').textContent = parseFloat(amount).toLocaleString();
+                    }
                 }, 500);
 
             } catch (e) {
@@ -524,6 +715,91 @@
         });
 
         loadContent();
+
+        // Real Slip Verification
+        // Helper: Convert File to Base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result.split(',')[1]); // Remove "data:image/xxx;base64,"
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Real Slip Verification (via Google Apps Script)
+        async function handleSlipUpload(input) {
+            // REPLACE THIS WITH YOUR DEPLOYED GOOGLE APPS SCRIPT URL!
+            const GAS_ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbw9_ZgNf0pzFbLwXP_gx7ZAvrEJwdXbVEWr1_Y23M4waokRsw25b98UHJxxhkRMo7QU8w/exec';
+
+            if (!input.files || !input.files[0]) return;
+            if (!currentProductData) { alert('ข้อมูลสินค้าไม่ถูกต้อง กรุณารีเฟรช'); return; }
+
+            const file = input.files[0];
+            const statusDiv = document.getElementById('verify-status');
+            const btn = document.querySelector('.btn-verify');
+
+            // 1. UI Loading
+            btn.disabled = true;
+            btn.innerHTML = '⏳ กำลังส่งข้อมูลไปตรวจสอบ...';
+            statusDiv.innerHTML = 'กรุณารอสักครู่ ระบบกำลังเช็คยอดกับธนาคาร';
+            statusDiv.style.color = '#FFA500';
+
+            try {
+                // 2. Convert to Base64
+                const base64File = await fileToBase64(file);
+
+                // 3. Prepare Payload (JSON)
+                const payload = {
+                    file: base64File,
+                    price: currentProductData.price,
+                    productId: new URLSearchParams(window.location.search).get('id')
+                };
+
+                // 4. Call Google Apps Script (Using 'no-cors' trick not standard here, standard POST is fine if GAS handles CORS)
+                // Note: Apps Script must handle OPTIONS or use type text/plain to avoid CORS preflight issues sometimes.
+                // We typically use text/plain content-type to bypass complex CORS preflight on simple requests.
+
+                const response = await fetch(GAS_ENDPOINT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                    // No headers needed for simple text/plain POST to GAS
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Success!
+                    btn.style.display = 'none'; // Hide button
+                    document.getElementById('manual-contact').classList.add('hidden'); // Hide contact buttons
+                    document.getElementById('verify-section').style.display = 'none'; // Hide upload section
+
+                    const downloadSection = document.getElementById('download-section');
+                    downloadSection.classList.remove('hidden');
+
+                    const dlLink = document.getElementById('final-download-link');
+                    dlLink.href = result.link; // Link from GAS
+
+                    if (result.link === '#' || !result.link) {
+                        dlLink.textContent = "⚠️ กรุณาติดต่อแอดมิน (ลิงก์มีปัญหา)";
+                        dlLink.style.background = "#555";
+                    }
+
+                    statusDiv.innerHTML = '';
+                    alert('✅ ขอบคุณครับ! ตรวจสอบยอดเงินเรียบร้อย');
+                } else {
+                    // Failed
+                    throw new Error(result.message || 'Verification failed');
+                }
+
+            } catch (err) {
+                console.error(err);
+                btn.disabled = false;
+                btn.innerHTML = '🧾 ลองอัปโหลดใหม่ (Server Error)';
+                statusDiv.innerHTML = '❌ ' + (err.message || "เกิดข้อผิดพลาดในการเชื่อมต่อ");
+                statusDiv.style.color = '#ff4444';
+            }
+        }
     </script>
 </body>
 
