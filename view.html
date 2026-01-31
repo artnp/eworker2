@@ -165,13 +165,37 @@
         /* Sidebar styles */
         .payment-sidebar {
             position: sticky;
-            top: 40px;
+            top: 20px;
+            /* Reduced top spacing */
             align-self: start;
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 32px;
             padding: 24px;
             text-align: center;
+
+            /* Vertical Overflow Handling */
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+
+            /* Hide scrollbar for cleaner UI */
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
+        }
+
+        /* Custom Scrollbar */
+        .payment-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .payment-sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .payment-sidebar::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 10px;
         }
 
         .payment-sidebar h3 {
@@ -183,7 +207,12 @@
             width: 100%;
             border-radius: 16px;
             background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
+
+
+
+
 
         .contact-btns {
             display: flex;
@@ -415,6 +444,108 @@
                 box-shadow: 0 0 0 0 rgba(141, 235, 45, 0);
             }
         }
+
+        /* Premium Upload Zone */
+        .upload-zone {
+            border: 2px dashed rgba(141, 235, 45, 0.3);
+            background: rgba(141, 235, 45, 0.03);
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: rgba(141, 235, 45, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px -5px rgba(141, 235, 45, 0.15);
+        }
+
+        .upload-zone:active {
+            transform: scale(0.98);
+        }
+
+        .upload-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 15px rgba(141, 235, 45, 0.3));
+            animation: float 3s ease-in-out infinite;
+            display: block;
+        }
+
+        .upload-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: white;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .upload-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .contact-highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .pro-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #FFD700, #F59E0B);
+            color: #1A1D24;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 100px;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 17, 21, 0.85);
+            backdrop-filter: blur(4px);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
     </style>
 </head>
 
@@ -511,21 +642,35 @@
             </div>
 
             <!-- 2. Upload Slip (Step 2) -->
-            <div id="verify-section" style="margin-top: 15px; border-top: 1px solid var(--border);">
+            <div id="verify-section" style="margin-top: 15px; position: relative;">
 
-                <div style="font-size: 0.8rem; color: #FFD700; margin-bottom: 15px; font-weight: 500;">
-                    📍 สำคัญ: ต้องแนบสลิปภายใน 1 ชม. หลังโอน
-                </div>
+                <!-- Step 2 Badge -->
+                <div class="step-badge"
+                    style="position: absolute; top: -10px; left: -10px; z-index: 20; width: 28px; height: 28px; font-size: 1rem;">
+                    2</div>
+
                 <input type="file" id="slip-upload" accept="image/*" style="display: none;"
                     onchange="handleSlipUpload(this)">
 
-                <div class="step-wrapper">
-                    <div class="step-badge" style="z-index: 20;">2</div>
-                    <button onclick="document.getElementById('slip-upload').click()" class="btn-verify">
-                        🧾 อัปโหลดสลิป (เพื่อรับไฟล์)
-                    </button>
+                <div class="upload-zone" onclick="document.getElementById('slip-upload').click()" id="upload-zone-el"
+                    style="padding: 15px 10px; margin-bottom: 5px;">
+                    <span class="pro-badge"
+                        style="font-size: 0.6rem; padding: 2px 8px; top: 8px; right: 8px;">⚡ระบบเช็คสลิป</span>
+                    <div class="upload-icon" style="font-size: 2rem; margin-bottom: 8px;">🧾</div>
+                    <div class="upload-title" style="font-size: 1rem; margin-bottom: 2px;">อัปโหลดสลิป</div>
+                    <div class="upload-subtitle" style="font-size: 0.75rem; line-height: 1.2;">
+                        ตรวจสอบสลิปปุ๊ป >> รับลิ้งค์ดาวน์โหลดทันที<br>
+                    </div>
+
+                    <!-- Loading Overlay -->
+                    <div id="upload-loading" class="loading-overlay">
+                        <div
+                            style="width: 30px; height: 30px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px;">
+                        </div>
+                        <div style="font-size: 0.9rem; font-weight: 600; color: white;">กำลังตรวจสอบ...</div>
+                    </div>
                 </div>
-                <div id="verify-status" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);"></div>
+
             </div>
 
             <!-- 3. Download Section -->
@@ -539,17 +684,22 @@
             </div>
 
             <!-- 4. Contact Buttons (Side by Side & Nofollow) -->
-            <div style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;" id="manual-contact">
-                <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:5px; text-align: left;">⚠️
+            <!-- 4. Contact Buttons (Compact) -->
+
+            <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px;" id="manual-contact">
+                <hr><br>
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:4px; text-align: left;">⚠️
                     แจ้งปัญหา / สอบถาม:</div>
-                <div class="contact-btns" style="margin-top: 0;">
-                    <a href="https://line.me/ti/p/gqIluRmdJ_" target="_blank" class="btn-chat btn-line" rel="nofollow">
-                        <span>🟢 LINE</span>
-                        <span style="font-size: 0.75rem; font-weight: 400; opacity: 0.95;">artap5321</span>
+                <div class="contact-btns" style="margin-top: 0; gap: 8px;">
+                    <a href="https://line.me/ti/p/gqIluRmdJ_" target="_blank" class="btn-chat btn-line" rel="nofollow"
+                        style="padding: 6px 4px;">
+                        <span style="font-size: 0.8rem;">🟢 LINE</span>
+                        <span style="font-size: 0.7rem; font-weight: 400; opacity: 0.95;">artap5321</span>
                     </a>
-                    <a href="https://m.me/61587141776821" target="_blank" class="btn-chat btn-messenger" rel="nofollow">
-                        <span>🔵 Facebook</span>
-                        <span style="font-size: 0.75rem; font-weight: 400; opacity: 0.95;">E-Worker</span>
+                    <a href="https://m.me/61587141776821" target="_blank" class="btn-chat btn-messenger" rel="nofollow"
+                        style="padding: 6px 4px;">
+                        <span style="font-size: 0.8rem;">🔵 Facebook</span>
+                        <span style="font-size: 0.7rem; font-weight: 400; opacity: 0.95;">E-Worker</span>
                     </a>
                 </div>
             </div>
@@ -604,10 +754,15 @@
         }
 
         // 2. Draw Premium Slip
+
+
+        // 2. Draw Premium Slip (Compact Version)
         function createPremiumSlip(qrCanvas, id, amount) {
             const canvas = document.getElementById('slip-canvas');
             const ctx = canvas.getContext('2d');
-            const W = 400, H = 580;
+
+            // Reduced Height from 580 -> 520 for better fit
+            const W = 400, H = 500;
             canvas.width = W; canvas.height = H;
 
             // Background
@@ -617,12 +772,12 @@
             // Header (Thai QR Payment Blue)
             const blue = '#1A3C6E';
             ctx.fillStyle = blue;
-            ctx.fillRect(0, 0, W, 100);
+            ctx.fillRect(0, 0, W, 80); // Reduced from 100
 
             ctx.fillStyle = '#FFFFFF';
             if (pIcon.complete) {
                 // Draw PromptPay Logo (White BG container)
-                ctx.drawImage(pIcon, 20, 20, 150, 60);
+                ctx.drawImage(pIcon, 20, 15, 120, 50); // Adjusted pos/size
             }
 
             // Thai QR Payment Text & Steps
@@ -630,17 +785,17 @@
             ctx.textAlign = 'center';
 
             // Link 1: Header
-            ctx.font = 'bold 24px sans-serif';
-            ctx.fillText('ชำระเงินพร้อมเพย์', W / 2, 40);
+            ctx.font = 'bold 22px sans-serif'; // Slightly smaller
+            ctx.fillText('ชำระเงินพร้อมเพย์', W / 2, 35);
 
             // Line 2: Process Guide
             ctx.font = '18px sans-serif';
-            ctx.fillText('1.สแกนจ่าย ➜ 2.แนบสลิป ➜ 3.รับไฟล์', W / 2, 75);
+            ctx.fillText('1.สแกนจ่าย ➜ 2.แนบสลิป ➜ 3.รับไฟล์', W / 2, 65);
 
             // Body
-            const qrSize = 250;
+            const qrSize = 220; // Slightly smaller QR (250 -> 220)
             const qrX = (W - qrSize) / 2;
-            const qrY = 130;
+            const qrY = 100; // Moved up (130 -> 100)
 
             if (qrCanvas) {
                 ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
@@ -648,18 +803,17 @@
 
             // Info
             ctx.fillStyle = '#333333';
-            ctx.font = 'bold 28px sans-serif';
+            ctx.font = 'bold 26px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('ยอดชำระ: ' + parseFloat(amount).toLocaleString('en-US') + ' บาท', W / 2, 450);
+            ctx.fillText('ยอดชำระ: ' + parseFloat(amount).toLocaleString('en-US') + ' บาท', W / 2, 360); // Adjusted Y
 
             ctx.fillStyle = '#666666';
-            ctx.font = '16px sans-serif';
-            ctx.fillText('สแกนผ่านแอปธนาคารได้ทุกธนาคาร', W / 2, 490);
+            ctx.font = '14px sans-serif';
+            ctx.fillText('สแกนผ่านแอปธนาคารได้ทุกธนาคาร', W / 2, 390);
 
-            // Button (Visual only - User clicks the whole canvas or the external button)
-            // But user wants it IN the slip.
+            // Button
             const btnW = 200, btnH = 40;
-            const btnX = (W - btnW) / 2, btnY = 510;
+            const btnX = (W - btnW) / 2, btnY = 420; // Adjusted Y
 
             // Button Shadow
             ctx.fillStyle = 'rgba(0,0,0,0.1)';
@@ -683,15 +837,105 @@
             ctx.font = 'bold 16px sans-serif';
             ctx.fillText('⬇️ บันทึกรูปภาพ', W / 2, btnY + 26);
 
-            // Add click listener to canvas for this button area
-            // Note: This adds a listener every time createPremiumSlip results. Ideally should be once.
-            // But since this function runs once per load usually, it's okay.
+            // Footer Text
+            ctx.fillStyle = '#999';
+            ctx.font = '12px sans-serif';
+
             canvas.style.cursor = 'pointer';
             canvas.onclick = function (e) {
                 downloadQR();
             };
+        }
 
+        // 2. Draw Premium Slip (Compact Version)
+        function createPremiumSlip(qrCanvas, id, amount) {
+            const canvas = document.getElementById('slip-canvas');
+            const ctx = canvas.getContext('2d');
 
+            // Reduced Height from 580 -> 520 for better fit
+            const W = 400, H = 500;
+            canvas.width = W; canvas.height = H;
+
+            // Background
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, W, H);
+
+            // Header (Thai QR Payment Blue)
+            const blue = '#1A3C6E';
+            ctx.fillStyle = blue;
+            ctx.fillRect(0, 0, W, 80); // Reduced from 100
+
+            ctx.fillStyle = '#FFFFFF';
+            if (pIcon.complete) {
+                // Draw PromptPay Logo (White BG container)
+                ctx.drawImage(pIcon, 20, 15, 120, 50); // Adjusted pos/size
+            }
+
+            // Thai QR Payment Text & Steps
+            ctx.fillStyle = '#FFFFFF';
+            ctx.textAlign = 'center';
+
+            // Link 1: Header
+            ctx.font = 'bold 22px sans-serif'; // Slightly smaller
+            ctx.fillText('ชำระเงินพร้อมเพย์', W / 2, 35);
+
+            // Line 2: Process Guide
+            ctx.font = '16px sans-serif';
+            ctx.fillText('1.สแกนจ่าย ➜ 2.แนบสลิป ➜ 3.รับไฟล์', W / 2, 65);
+
+            // Body
+            const qrSize = 220; // Slightly smaller QR (250 -> 220)
+            const qrX = (W - qrSize) / 2;
+            const qrY = 100; // Moved up (130 -> 100)
+
+            if (qrCanvas) {
+                ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+            }
+
+            // Info
+            ctx.fillStyle = '#333333';
+            ctx.font = 'bold 26px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('ยอดชำระ: ' + parseFloat(amount).toLocaleString('en-US') + ' บาท', W / 2, 360); // Adjusted Y
+
+            ctx.fillStyle = '#666666';
+            ctx.font = '14px sans-serif';
+            ctx.fillText('สแกนผ่านแอปธนาคารได้ทุกธนาคาร', W / 2, 390);
+
+            // Button
+            const btnW = 200, btnH = 40;
+            const btnX = (W - btnW) / 2, btnY = 420; // Adjusted Y
+
+            // Button Shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.1)';
+            ctx.beginPath();
+            ctx.roundRect(btnX + 2, btnY + 2, btnW, btnH, 20);
+            ctx.fill();
+
+            // Button BG
+            ctx.fillStyle = '#f8f9fa';
+            ctx.beginPath();
+            ctx.roundRect(btnX, btnY, btnW, btnH, 20);
+            ctx.fill();
+
+            // Button Border
+            ctx.strokeStyle = '#dee2e6';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Button Text
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 16px sans-serif';
+            ctx.fillText('⬇️ บันทึกรูปภาพ', W / 2, btnY + 26);
+
+            // Footer Text
+            ctx.fillStyle = '#999';
+            ctx.font = '12px sans-serif';
+
+            canvas.style.cursor = 'pointer';
+            canvas.onclick = function (e) {
+                downloadQR();
+            };
         }
 
         async function loadContent() {
@@ -779,12 +1023,11 @@
 
             const file = input.files[0];
             const statusDiv = document.getElementById('verify-status');
-            const btn = document.querySelector('.btn-verify');
+            const loadingOverlay = document.getElementById('upload-loading');
 
             // 1. UI Loading
-            btn.disabled = true;
-            btn.innerHTML = '⏳ กำลังส่งข้อมูลไปตรวจสอบ...';
-            statusDiv.innerHTML = 'กรุณารอสักครู่ ระบบกำลังเช็คยอดกับธนาคาร';
+            if (loadingOverlay) loadingOverlay.style.display = 'flex';
+            statusDiv.innerHTML = '⚡ กำลังตรวจสอบยอดเงินกับธนาคาร...';
             statusDiv.style.color = '#FFA500';
 
             try {
@@ -798,21 +1041,16 @@
                     productId: new URLSearchParams(window.location.search).get('id')
                 };
 
-                // 4. Call Google Apps Script (Using 'no-cors' trick not standard here, standard POST is fine if GAS handles CORS)
-                // Note: Apps Script must handle OPTIONS or use type text/plain to avoid CORS preflight issues sometimes.
-                // We typically use text/plain content-type to bypass complex CORS preflight on simple requests.
-
+                // 4. Call Google Apps Script
                 const response = await fetch(GAS_ENDPOINT_URL, {
                     method: 'POST',
                     body: JSON.stringify(payload)
-                    // No headers needed for simple text/plain POST to GAS
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
                     // Success!
-                    btn.style.display = 'none'; // Hide button
                     document.getElementById('manual-contact').classList.add('hidden'); // Hide contact buttons
                     document.getElementById('verify-section').style.display = 'none'; // Hide upload section
 
@@ -836,18 +1074,20 @@
 
             } catch (err) {
                 console.error(err);
-                btn.disabled = false;
-                btn.innerHTML = '🧾 ลองอัปโหลดใหม่';
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
                 statusDiv.innerHTML = '❌ ' + (err.message || "เกิดข้อผิดพลาดในการเชื่อมต่อ");
                 statusDiv.style.color = '#ff4444';
             }
         }
 
         // --- Drag & Drop Feature ---
-        const dropZone = document.querySelector('.payment-sidebar');
+        // --- Drag & Drop Feature (Updated for Premium Zone) ---
+        const dropZone = document.getElementById('upload-zone-el');
+        // fallback if element not found yet (should not happen if HTML replaced first)
+        const safeDropZone = dropZone || document.querySelector('.payment-sidebar');
 
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, preventDefaults, false);
+            safeDropZone.addEventListener(eventName, preventDefaults, false);
         });
 
         function preventDefaults(e) {
@@ -856,22 +1096,26 @@
         }
 
         ['dragenter', 'dragover'].forEach(eventName => {
-            dropZone.addEventListener(eventName, highlight, false);
+            safeDropZone.addEventListener(eventName, highlight, false);
         });
 
         ['dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, unhighlight, false);
+            safeDropZone.addEventListener(eventName, unhighlight, false);
         });
 
         function highlight(e) {
-            dropZone.classList.add('drag-active');
+            safeDropZone.style.borderColor = 'var(--primary)';
+            safeDropZone.style.background = 'rgba(141, 235, 45, 0.1)';
+            safeDropZone.style.transform = 'scale(1.02)';
         }
 
         function unhighlight(e) {
-            dropZone.classList.remove('drag-active');
+            safeDropZone.style.borderColor = '';
+            safeDropZone.style.background = '';
+            safeDropZone.style.transform = '';
         }
 
-        dropZone.addEventListener('drop', handleDrop, false);
+        safeDropZone.addEventListener('drop', handleDrop, false);
 
         function handleDrop(e) {
             const dt = e.dataTransfer;
