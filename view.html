@@ -546,6 +546,82 @@
             justify-content: center;
             z-index: 10;
         }
+
+        /* Recommended Products */
+        .recommended-section {
+            margin-top: 60px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 107, 0, 0.05) 100%);
+            border: 2px dashed #FF6B00;
+            border-radius: 20px;
+            padding: 24px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-card::before {
+            content: '✨ แนะนำสำหรับคุณ';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #FF6B00;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-bottom-left-radius: 12px;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(141, 235, 45, 0.05) 100%);
+        }
+
+        .product-card:hover::before {
+            background: var(--primary);
+            color: black;
+        }
+
+        .product-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            margin-top: 10px;
+        }
+
+        .product-price {
+            color: #FF6B00;
+            font-weight: 800;
+            font-size: 1.5rem;
+            margin-top: auto;
+            text-shadow: 0 0 20px rgba(255, 107, 0, 0.3);
+        }
+
+        .currency-symbol {
+            color: var(--primary);
+            font-size: 1rem;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
     </style>
 </head>
 
@@ -593,6 +669,14 @@
                     </div>
                     <div class="faq-answer">ใช้ได้ตลอดชีพไปเลย
                         ไม่มีค่าบริการผูกมัดใด ๆ ทั้งสิ้น ไม่ต้องห่วงกังวลกับเรื่องนี้เลย</div>
+                </div>
+            </div>
+
+            <!-- Recommended Products -->
+            <div class="recommended-section" id="recommended-section" style="display: none;">
+                <h2 class="faq-header" style="margin-bottom: 20px;">🔥 สินค้าที่เกี่ยวข้อง</h2>
+                <div class="products-grid" id="recommended-grid">
+                    <!-- Items go here -->
                 </div>
             </div>
             <footer>
@@ -951,6 +1035,9 @@
                 const data = await res.json();
                 currentProductData = data;
 
+                // Load recommendations
+                loadRecommendations(id, data.tags);
+
                 document.title = data.title + " - Eworker Store";
                 document.getElementById('title').textContent = data.title;
                 document.getElementById('content').innerHTML = data.content;
@@ -1001,6 +1088,44 @@
                 item.parentElement.classList.toggle('active');
             });
         });
+
+        async function loadRecommendations(currentId, currentTags) {
+            if (!currentTags || currentTags.length === 0) return;
+
+            try {
+                const res = await fetch('data/products_public.json');
+                const products = await res.json();
+
+                // Filter logic:
+                // 1. Not current product
+                // 2. Has at least one overlapping tag
+                const related = products.filter(p => {
+                    if (p.id === currentId) return false;
+                    if (!p.tags) return false;
+                    return p.tags.some(t => currentTags.includes(t));
+                });
+
+                if (related.length > 0) {
+                    // Sort descending by updated_at (newest first)
+                    related.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+
+                    // Take top 3
+                    const show = related.slice(0, 3);
+
+                    const grid = document.getElementById('recommended-grid');
+                    grid.innerHTML = show.map(p => `
+                        <a href="view.html?id=${p.id}" class="product-card">
+                            <div class="product-title">${p.title}</div>
+                            <div class="product-price">${parseFloat(p.price).toLocaleString()} <span class="currency-symbol">฿</span></div>
+                        </a>
+                    `).join('');
+
+                    document.getElementById('recommended-section').style.display = 'block';
+                }
+            } catch (e) {
+                console.log("Error loading recommendations", e);
+            }
+        }
 
         loadContent();
 
