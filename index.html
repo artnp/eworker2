@@ -66,6 +66,17 @@
             line-height: 1.2;
             margin-bottom: 15px;
             letter-spacing: -1px;
+            min-height: 240px;
+            /* Reserve space for layout stability */
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+                /* Smaller font on mobile */
+                min-height: 180px;
+            }
         }
 
         .hero-title span {
@@ -358,7 +369,8 @@
     <div class="container">
         <!-- 1. Header -->
         <header class="fade-in">
-            <h1 class="hero-title"><span>Tools for Success</span><br>ระบบอัตโนมัติเพื่อคุณ</h1>
+            <h1 class="hero-title"><span>Tools for Success</span><br>ระบบอัตโนมัติเพื่อ<span id="typing-text"
+                    style="color: var(--primary);"></span><span class="cursor">|</span></h1>
             <p class="hero-sub" id="store-name">แหล่งรวมสคริปต์คุณภาพสูง ช่วยลดเวลาทำงานซ้ำซาก
                 ให้คุณโฟกัสสิ่งที่สำคัญได้เต็มที่</p>
 
@@ -396,6 +408,12 @@
             <div style="margin-top: 30px; position: relative; max-width: 500px; margin-left: auto; margin-right: auto;">
                 <input type="text" id="search-input" autocomplete="off" placeholder="🔍 ค้นหาสคริปต์..."
                     style="width: 100%; padding: 16px 24px; padding-left: 50px; border-radius: 50px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white; font-size: 1.1rem; outline: none; transition: all 0.3s; backdrop-filter: blur(10px);">
+
+                <!-- Filter Chips -->
+                <div id="filter-container"
+                    style="display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+                    <!-- Chips will be injected here -->
+                </div>
             </div><br>
 
             <div class="products-grid" id="products-container">
@@ -406,6 +424,88 @@
                 ไม่พบสินค้าที่ค้นหา
             </div>
         </div>
+
+        <style>
+            /* Filter Chip Styles */
+            .filter-chip {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid var(--border);
+                color: var(--text-dim);
+                padding: 6px 16px;
+                border-radius: 20px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                user-select: none;
+            }
+
+            .filter-chip:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                transform: translateY(-2px);
+            }
+
+            .filter-chip.active {
+                background: var(--primary);
+                color: black;
+                font-weight: 700;
+                border-color: var(--primary);
+                transform: scale(1.05);
+                box-shadow: 0 4px 15px rgba(141, 235, 45, 0.3);
+            }
+
+            /* New Badge Styles */
+            .new-badge {
+                position: absolute;
+                top: 12px;
+                right: 12px;
+                background: #FF4444;
+                color: white;
+                font-size: 0.7rem;
+                font-weight: 800;
+                padding: 4px 8px;
+                border-radius: 4px;
+                z-index: 2;
+                box-shadow: 0 2px 10px rgba(255, 68, 68, 0.4);
+                animation: pulse-red 2s infinite;
+            }
+
+            @keyframes pulse-red {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.4);
+                }
+
+                70% {
+                    box-shadow: 0 0 0 6px rgba(255, 68, 68, 0);
+                }
+
+                100% {
+                    box-shadow: 0 0 0 0 rgba(255, 68, 68, 0);
+                }
+            }
+            }
+
+            /* Typing Cursor */
+            .cursor {
+                display: inline-block;
+                width: 3px;
+                background-color: var(--primary);
+                animation: blink 1s infinite;
+                margin-left: 5px;
+            }
+
+            @keyframes blink {
+
+                0%,
+                100% {
+                    opacity: 1;
+                }
+
+                50% {
+                    opacity: 0;
+                }
+            }
+        </style>
 
         <!-- 4. How to Buy (Reassurance) -->
         <div class="steps-container">
@@ -472,8 +572,10 @@
                 allProducts = await res.json();
 
                 // Sort products: Newest first (leftmost in grid)
+                // Sort products: Newest first
                 allProducts.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
 
+                generateFilterChips();
                 renderProducts(allProducts);
 
             } catch (e) {
@@ -492,9 +594,20 @@
                 return;
             }
 
+            const now = new Date();
+            const DAYS_TO_CONSIDER_NEW = 30;
+
             noResults.style.display = 'none';
-            container.innerHTML = products.map(p => `
+            container.innerHTML = products.map(p => {
+                // Check if new
+                const date = new Date(p.updated_at);
+                const diffTime = Math.abs(now - date);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                const isNew = diffDays <= DAYS_TO_CONSIDER_NEW;
+
+                return `
                 <a href="view.html?id=${p.id}" class="product-card">
+                    ${isNew ? '<div class="new-badge">🔥 UPDATED</div>' : ''}
                     <div class="product-title">${p.title}</div>
                     <div class="product-desc">${p.description}</div>
                     <div class="product-footer">
@@ -502,7 +615,37 @@
                         <div class="buy-link">ดูรายละเอียด →</div>
                     </div>
                 </a>
-            `).join('');
+            `}).join('');
+        }
+
+        function generateFilterChips() {
+            const tags = new Set();
+            allProducts.forEach(p => {
+                if (p.tags) p.tags.forEach(t => tags.add(t));
+            });
+
+            const container = document.getElementById('filter-container');
+            if (tags.size === 0) return;
+
+            let html = `<div class="filter-chip active" onclick="filterByTag('all', this)">All</div>`;
+            tags.forEach(t => {
+                html += `<div class="filter-chip" onclick="filterByTag('${t}', this)">${t}</div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function filterByTag(tag, el) {
+            // UI Toggle
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+
+            // Logic
+            if (tag === 'all') {
+                renderProducts(allProducts);
+            } else {
+                const filtered = allProducts.filter(p => p.tags && p.tags.includes(tag));
+                renderProducts(filtered);
+            }
         }
 
         // Search Functionality
@@ -527,6 +670,41 @@
             searchInput.style.borderColor = 'var(--border)';
             searchInput.style.boxShadow = 'none';
         });
+
+        // Typing Animation
+        const typingText = document.getElementById('typing-text');
+        const words = ["คุณ", "ยอดขายที่ดีขึ้น", "การทำงานที่ลดลง", "ธุรกิจที่เติบโต"];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let typeSpeed = 100;
+
+        function type() {
+            const currentWord = words[wordIndex];
+
+            if (isDeleting) {
+                typingText.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+                typeSpeed = 50;
+            } else {
+                typingText.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+                typeSpeed = 100;
+            }
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                isDeleting = true;
+                typeSpeed = 2000; // Wait before deleting
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                typeSpeed = 500; // Wait before typing new word
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+
+        document.addEventListener('DOMContentLoaded', type);
 
         loadStore();
     </script>
