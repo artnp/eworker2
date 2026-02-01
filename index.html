@@ -361,6 +361,7 @@
             <h1 class="hero-title"><span>Tools for Success</span><br>ระบบอัตโนมัติเพื่อคุณ</h1>
             <p class="hero-sub" id="store-name">แหล่งรวมสคริปต์คุณภาพสูง ช่วยลดเวลาทำงานซ้ำซาก
                 ให้คุณโฟกัสสิ่งที่สำคัญได้เต็มที่</p>
+
         </header>
 
         <!-- 2. Trust Features Highlight -->
@@ -385,13 +386,24 @@
 
         <!-- 3. Products Grid (Main Focus) -->
         <div class="products-section fade-in">
+
             <div class="section-header">
+
                 <h2 class="section-title">📦 สินค้าแนะนำล่าสุด</h2>
                 <div class="section-desc">คัดสรรมาเพื่อการแก้ปัญหายุ่งยากโดยเฉพาะ</div>
             </div>
+            <!-- Search Bar -->
+            <div style="margin-top: 30px; position: relative; max-width: 500px; margin-left: auto; margin-right: auto;">
+                <input type="text" id="search-input" autocomplete="off" placeholder="🔍 ค้นหาสคริปต์..."
+                    style="width: 100%; padding: 16px 24px; padding-left: 50px; border-radius: 50px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white; font-size: 1.1rem; outline: none; transition: all 0.3s; backdrop-filter: blur(10px);">
+            </div><br>
 
             <div class="products-grid" id="products-container">
                 <!-- Loading -->
+            </div>
+            <div id="no-results"
+                style="display: none; text-align: center; width: 100%; grid-column: 1 / -1; padding: 40px; color: var(--text-dim);">
+                ไม่พบสินค้าที่ค้นหา
             </div>
         </div>
 
@@ -429,6 +441,8 @@
     </div>
 
     <script>
+        let allProducts = [];
+
         async function loadStore() {
             const container = document.getElementById('products-container');
 
@@ -455,26 +469,65 @@
 
                 // Products
                 const res = await fetch('data/products_public.json');
-                const products = await res.json();
+                allProducts = await res.json();
 
                 // Sort products: Newest first (leftmost in grid)
-                products.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+                allProducts.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
 
-                container.innerHTML = products.map(p => `
-                    <a href="view.html?id=${p.id}" class="product-card">
-                        <div class="product-title">${p.title}</div>
-                        <div class="product-desc">${p.description}</div>
-                        <div class="product-footer">
-                            <div class="product-price">${parseFloat(p.price).toLocaleString()} ฿</div>
-                            <div class="buy-link">ดูรายละเอียด →</div>
-                        </div>
-                    </a>
-                `).join('');
+                renderProducts(allProducts);
+
             } catch (e) {
                 console.error(e);
                 document.getElementById('products-container').innerHTML = '<p style="color:red; text-align:center; grid-column:1/-1;">โหลดข้อมูลไม่สำเร็จ (ลอง Sync อีกครั้ง)</p>';
             }
         }
+
+        function renderProducts(products) {
+            const container = document.getElementById('products-container');
+            const noResults = document.getElementById('no-results');
+
+            if (products.length === 0) {
+                container.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            noResults.style.display = 'none';
+            container.innerHTML = products.map(p => `
+                <a href="view.html?id=${p.id}" class="product-card">
+                    <div class="product-title">${p.title}</div>
+                    <div class="product-desc">${p.description}</div>
+                    <div class="product-footer">
+                        <div class="product-price">${parseFloat(p.price).toLocaleString()} ฿</div>
+                        <div class="buy-link">ดูรายละเอียด →</div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        // Search Functionality
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = allProducts.filter(p =>
+                p.title.toLowerCase().includes(term) ||
+                (p.tags && p.tags.some(t => t.toLowerCase().includes(term)))
+            );
+            renderProducts(filtered);
+        });
+
+        // Add focus effect style
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('focus', () => {
+            searchInput.style.background = 'rgba(255,255,255,0.1)';
+            searchInput.style.borderColor = 'var(--primary)';
+            searchInput.style.boxShadow = '0 0 15px rgba(141, 235, 45, 0.2)';
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.style.background = 'rgba(255,255,255,0.05)';
+            searchInput.style.borderColor = 'var(--border)';
+            searchInput.style.boxShadow = 'none';
+        });
+
         loadStore();
     </script>
 </body>
