@@ -395,6 +395,263 @@
             </div>
         </div>
 
+        <!-- 3. Highlight Services Slider -->
+        <div class="slider-container fade-in">
+            <div class="slider-wrapper">
+                <!-- Slide 1: Graduation Gown -->
+                <div class="banner-slide"
+                    style="background: radial-gradient(circle at top right, #3b82f633, transparent 40%), linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+                    <div class="slide-content">
+                        <div class="slide-badge">🎓 บริการยอดฮิต</div>
+                        <h2 class="slide-title">รับตัดต่อภาพชุดครุย<br><span style="color: #60a5fa;">เนียนสวย
+                                สมจริง</span></h2>
+                        <div class="slide-price-tag">ค่าบริการ 50.-</div>
+                        <p class="slide-desc">ไม่ต้องไปถ่ายที่ร้าน ส่งรูปถ่ายหน้าตรงมาตัดต่อได้เลย งานไว ได้งานจริง</p>
+                        <div class="slide-actions">
+                            <a href="https://line.me/ti/p/gqIluRmdJ_" target="_blank" class="btn-chat btn-line"
+                                rel="nofollow">
+                                <span>🟢 ทัก LINE</span>
+                            </a>
+                            <a href="https://m.me/61587141776821" target="_blank" class="btn-chat btn-messenger"
+                                rel="nofollow">
+                                <span>🔵 ทัก inbox</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="slide-image-deco">📸</div>
+                </div>
+
+                <!-- Slide 2: Photo Retouching -->
+                <div class="banner-slide"
+                    style="background: radial-gradient(circle at bottom left, #ec489933, transparent 40%), linear-gradient(135deg, #370b32 0%, #6b1248 100%);">
+                    <div class="slide-content">
+                        <div class="slide-badge" style="background:#ec4899; color:white;">✨ แต่งรูปทั่วไป</div>
+                        <h2 class="slide-title">รับแต่งรูป ปรับแสง รีทัช<br><span
+                                style="color: #f472b6;">ราคาเป็นกันเอง</span>
+                        </h2>
+                        <div class="slide-price-tag" style="background: rgba(255,255,255,0.15);">ทักแชทประเมินราคา</div>
+                        <p class="slide-desc">งานด่วน งานเร่ง ปรับผิวใส ลบคน ลบพื้นหลัง เราจัดการให้</p>
+                        <div class="slide-actions">
+                            <a href="https://line.me/ti/p/gqIluRmdJ_" target="_blank" class="btn-chat btn-line"
+                                rel="nofollow">
+                                <span>🟢 ทัก LINE</span>
+                            </a>
+                            <a href="https://m.me/61587141776821" target="_blank" class="btn-chat btn-messenger"
+                                rel="nofollow">
+                                <span>🔵 ทัก inbox</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="slide-image-deco">🎨</div>
+                </div>
+            </div>
+            <!-- Pagination Dots -->
+            <div class="slider-dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+
+        <style>
+            /* Slider CSS */
+            .slider-container {
+                overflow: hidden;
+                width: 100%;
+                margin-bottom: 60px;
+                border-radius: 24px;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+                position: relative;
+                border: 1px solid var(--border);
+                background: #000;
+            }
+
+            .slider-wrapper {
+                display: flex;
+                width: 200%;
+                animation: slideShow 12s infinite cubic-bezier(0.45, 0, 0.55, 1);
+            }
+
+            .banner-slide {
+                width: 50%;
+                padding: 60px 50px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: relative;
+                box-sizing: border-box;
+            }
+
+            .slide-content {
+                z-index: 2;
+                max-width: 600px;
+            }
+
+            .slide-title {
+                font-size: 2.8rem;
+                font-weight: 800;
+                line-height: 1.1;
+                margin-bottom: 20px;
+                color: white;
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            }
+
+            .slide-desc {
+                font-size: 1.1rem;
+                color: rgba(255, 255, 255, 0.8);
+                margin-bottom: 30px;
+                font-weight: 300;
+            }
+
+            .slide-badge {
+                display: inline-block;
+                background: #3b82f6;
+                color: white;
+                font-weight: 700;
+                font-size: 0.8rem;
+                padding: 6px 14px;
+                border-radius: 50px;
+                margin-bottom: 15px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            }
+
+            .slide-price-tag {
+                display: inline-block;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                padding: 8px 16px;
+                border-radius: 10px;
+                font-size: 1.2rem;
+                font-weight: 700;
+                color: #fbbf24;
+                margin-bottom: 20px;
+                backdrop-filter: blur(5px);
+            }
+
+            .slide-image-deco {
+                font-size: 10rem;
+                opacity: 0.1;
+                position: absolute;
+                right: 40px;
+                bottom: -20px;
+                transform: rotate(-10deg);
+                z-index: 1;
+                pointer-events: none;
+            }
+
+            .slide-actions {
+                display: flex;
+                gap: 15px;
+            }
+
+            .slide-actions .btn-chat {
+                padding: 12px 24px;
+                font-size: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .slider-dots {
+                position: absolute;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                gap: 10px;
+                z-index: 10;
+            }
+
+            .dot {
+                width: 10px;
+                height: 10px;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                transition: all 0.3s;
+            }
+
+            /* Simple animation sync with slideShow */
+            .dot:nth-child(1) {
+                animation: dotActive1 12s infinite;
+            }
+
+            .dot:nth-child(2) {
+                animation: dotActive2 12s infinite;
+            }
+
+            @keyframes slideShow {
+
+                0%,
+                45% {
+                    transform: translateX(0);
+                }
+
+                50%,
+                95% {
+                    transform: translateX(-50%);
+                }
+
+                100% {
+                    transform: translateX(0);
+                }
+            }
+
+            @keyframes dotActive1 {
+
+                0%,
+                45% {
+                    background: white;
+                    border-color: white;
+                }
+
+                50%,
+                100% {
+                    background: transparent;
+                    border-color: rgba(255, 255, 255, 0.3);
+                }
+            }
+
+            @keyframes dotActive2 {
+
+                0%,
+                45% {
+                    background: transparent;
+                    border-color: rgba(255, 255, 255, 0.3);
+                }
+
+                50%,
+                100% {
+                    background: white;
+                    border-color: white;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .banner-slide {
+                    flex-direction: column;
+                    text-align: center;
+                    padding: 40px 20px;
+                    justify-content: center;
+                }
+
+                .slide-content {
+                    width: 100%;
+                }
+
+                .slide-title {
+                    font-size: 2rem;
+                }
+
+                .slide-actions {
+                    justify-content: center;
+                    flex-wrap: wrap;
+                }
+
+                .slide-image-deco {
+                    display: none;
+                }
+            }
+        </style>
+
         <!-- 3. Products Grid (Main Focus) -->
         <div class="products-section fade-in">
 
@@ -528,7 +785,9 @@
             </div>
         </div>
 
-        <!-- 5. Custom Service Banner -->
+
+
+        <!-- 6. Custom Service Banner -->
         <div class="custom-banner">
             <div class="custom-text">
                 <h3>🚀 ต้องการสคริปต์เฉพาะทาง?</h3>
@@ -559,21 +818,26 @@
             `).join('');
 
             try {
-                // Settings
+                // 1. Fetch Banners
+                const banRes = await fetch('data/banners.json');
+                if (banRes.ok) {
+                    const banners = await banRes.json();
+                    renderBanners(banners);
+                }
+
+                // 2. Settings
                 const setRes = await fetch('data/settings.json');
                 if (setRes.ok) {
                     const settings = await setRes.json();
                     // document.getElementById('store-name').textContent = settings.store_name; // Optional overwrite
                 }
 
-                // Products
+                // 3. Products
                 const res = await fetch('data/products_public.json');
                 allProducts = await res.json();
 
-                // Sort products: Newest first (leftmost in grid)
-                // Sort products: Newest first
+                // Sort and Render
                 allProducts.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
-
                 generateFilterChips();
                 renderProducts(allProducts);
 
@@ -582,6 +846,98 @@
                 document.getElementById('products-container').innerHTML = '<p style="color:red; text-align:center; grid-column:1/-1;">โหลดข้อมูลไม่สำเร็จ (ลอง Sync อีกครั้ง)</p>';
             }
         }
+
+        function renderBanners(banners) {
+            if (!banners || banners.length === 0) {
+                document.querySelector('.slider-container').style.display = 'none';
+                return;
+            }
+
+            const wrapper = document.querySelector('.slider-wrapper');
+            const dotsContainer = document.querySelector('.slider-dots');
+
+            // Generate HTML
+            wrapper.innerHTML = banners.map(b => `
+                <div class="banner-slide" style="background: ${b.bg_gradient};">
+                    <div class="slide-content">
+                        <div class="slide-badge" style="background:${b.badge_color};">${b.badge}</div>
+                        <h2 class="slide-title">${b.title}<br><span style="color: #60a5fa;">${b.subtitle}</span></h2>
+                        <div class="slide-price-tag">${b.price_text}</div>
+                        <p class="slide-desc">${b.description}</p>
+                        <div class="slide-actions">
+                            <a href="${b.link_line}" target="_blank" class="btn-chat btn-line" rel="nofollow">
+                                <span>🟢 ทัก LINE</span>
+                            </a>
+                            <a href="${b.link_fb}" target="_blank" class="btn-chat btn-messenger" rel="nofollow">
+                                <span>🔵 รายละเอียดบริการ</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="slide-image-deco">${b.icon}</div>
+                </div>
+            `).join('');
+
+            // Generate Dots
+            dotsContainer.innerHTML = banners.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`).join('');
+
+            // Remove CSS Animation if present
+            wrapper.style.animation = 'none';
+            wrapper.style.width = (banners.length * 100) + '%';
+
+            // Adjust slide width
+            const slides = document.querySelectorAll('.banner-slide');
+            slides.forEach(s => s.style.width = (100 / banners.length) + '%');
+
+            startSlider(banners.length);
+        }
+
+        let slideInterval;
+        let currentSlide = 0;
+
+        function startSlider(count) {
+            if (count <= 1) return;
+            if (slideInterval) clearInterval(slideInterval);
+
+            const wrapper = document.querySelector('.slider-wrapper');
+
+            slideInterval = setInterval(() => {
+                currentSlide = (currentSlide + 1) % count;
+                updateSlidePosition(count);
+            }, 5000);
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            // Determine count from DOM
+            const count = document.querySelectorAll('.banner-slide').length;
+            updateSlidePosition(count);
+            // Reset timer
+            startSlider(count);
+        }
+
+        function updateSlidePosition(count) {
+            const wrapper = document.querySelector('.slider-wrapper');
+            const percentage = -(currentSlide * (100 / count)); // e.g. -50% for 2nd slide of 2 (wait, wrapper is 200%)
+            // If Wrapper is 200% width.
+            // Slide 1 is at 0%. Slide 2 is at 50% relative to wrapper.
+            // Translation should be -0%, -50% (relative to 200% width?) No.
+            // translateX uses percentage of the element itself.
+            // So if wrapper is 200%, -50% moves it half-way (showing 2nd slide). Correct.
+            // If 3 slides, wrapper is 300%. Steps: 0, -33.33%, -66.66%.
+
+            wrapper.style.transform = `translateX(-${currentSlide * (100 / count)}%)`;
+            wrapper.style.transition = 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'; // Smooth JS transition
+
+            // Update dots
+            document.querySelectorAll('.dot').forEach((d, i) => {
+                if (i === currentSlide) d.classList.add('active');
+                else d.classList.remove('active');
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', type);
+
+        loadStore();
 
         function renderProducts(products) {
             const container = document.getElementById('products-container');
@@ -606,7 +962,7 @@
 
                 return `
                 <a href="view.html?id=${p.id}" class="product-card">
-                    ${isNew ? '<div class="new-badge">🔥 UPDATED</div>' : ''}
+                    ${isNew ? '<div class="new-badge">🔥 ใหม่ล่าสุด</div>' : ''}
                     <div class="product-title">${p.title}</div>
                     <div class="product-desc">${p.description}</div>
                     <div class="product-footer">
