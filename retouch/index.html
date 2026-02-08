@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retouch - สั่งทำรูปครุยออนไลน์</title>
+    <meta name="description" content="ระบบสั่งทำชุดครุยออนไลน์ เลือกมหาลัย คณะ และทรงผมได้ตามต้องการ">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;600&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="stylesheet" href="css/style_modal.css?v=2">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 สั่งทำรูปถ่าย <span class="highlight">หน้าตรง</span></h1>
+            <p>ระบบป้อนข้อมูลเข้าคิวงานอัตโนมัติ</p>
+        </header>
+
+        <main>
+            <div class="card glass">
+                <!-- Progress Bar -->
+                <div class="step-progress">
+                    <div class="step-indicator active" data-step="1"><span>1</span></div>
+                    <div class="step-line"></div>
+                    <div class="step-indicator" data-step="2"><span>2</span></div>
+                    <div class="step-line"></div>
+                    <div class="step-indicator" data-step="3"><span>3</span></div>
+                    <div class="step-line"></div>
+                    <div class="step-indicator" data-step="4"><span>4</span></div>
+                </div>
+
+                <form id="orderForm">
+                    <!-- Step 1: Upload Photo -->
+                    <div class="form-step active" id="step1">
+                        <div class="form-section">
+                            <label class="section-title">1. ข้อมูลส่วนตัว & รูปถ่าย</label>
+
+                            <!-- Gender Selector Moved Here -->
+                            <p class="section-desc" style="margin-bottom: 10px;">ระบุเพศของคุณ</p>
+                            <div class="gender-selector" style="margin-bottom: 20px;">
+                                <label class="radio-card">
+                                    <input type="radio" name="gender" value="male">
+                                    <div class="card-content">
+                                        <span class="icon">🤵</span>
+                                        <span>ชาย</span>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="gender" value="female">
+                                    <div class="card-content">
+                                        <span class="icon">👩‍🎓</span>
+                                        <span>หญิง</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <p class="section-desc">ถ่ายรูปหน้าตรง เห็นไหล่ชัดเจน ฉากหลังเรียบๆ (หรือรูปเดิมที่คุณมี)
+                            </p>
+                            <div class="upload-area" id="dropZone">
+                                <input type="file" id="faceImage" accept="image/*" required hidden>
+                                <div class="upload-placeholder" id="uploadPlaceholder">
+                                    <img src="https://cdn-icons-png.flaticon.com/128/11264/11264662.png"
+                                        alt="Selfie Icon" class="custom-icon" style="width: 80px; margin-bottom: 10px;">
+                                    <p>คลิกเพื่อเลือกรูป หรือลากไฟล์มาวางที่นี่</p>
+                                    <small>แนะนำขนาดไม่เกิน 5MB</small>
+                                    <div class="or-divider">- หรือ -</div>
+                                    <button type="button" class="btn-camera" id="openCameraBtn">📸
+                                        เปิดกล้องถ่ายเลย</button>
+                                </div>
+
+                                <div id="cameraContainer" class="camera-container hidden">
+                                    <video id="cameraFeed" autoplay playsinline></video>
+                                    <canvas id="cameraCanvas" class="hidden"></canvas>
+                                    <div class="camera-controls">
+                                        <button type="button" class="btn-capture" id="captureBtn">🔘 ถ่ายรูป</button>
+                                        <button type="button" class="btn-cancel" id="closeCameraBtn">ยกเลิก</button>
+                                    </div>
+                                </div>
+
+                                <img id="imagePreview" src="" alt="Preview" class="hidden">
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- Step 1 End -->
+
+
+
+                    <!-- Step 2: Education -->
+                    <div class="form-step" id="step2">
+                        <div class="form-section">
+                            <label class="section-title">2. สถาบันการศึกษา</label>
+                            <p class="section-desc">เลือกมหาวิทยาลัยที่คุณเรียนจบคณะที่เรียน</p>
+
+                            <div id="universityLookup">
+                                <div class="input-group">
+                                    <label for="university">มหาวิทยาลัย</label>
+                                    <select id="university">
+                                        <option value="">เลือกมหาวิทยาลัย...</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label for="faculty">คณะ (แถบสีครุย)</label>
+                                    <select id="faculty" disabled>
+                                        <option value="">เลือกคณะ...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="preview-result glass hidden" id="previewResult" style="margin-top: 20px;">
+                                <p>ครุยที่คุณต้องการ:</p>
+                                <div class="gown-preview-container">
+                                    <img id="gownPreviewImg" src="" alt="Gown Preview">
+                                </div>
+                            </div>
+
+                            <div id="manualEntryBox" class="input-group" style="margin-top: 15px;">
+                                <label>ระบุเพิ่มเติม / ไม่พบสถาบัน (Optional)</label>
+                                <textarea id="custom_gown_details"
+                                    placeholder="เช่น แถบสีไม่ตรง / ไม่มีคณะ หรือ วิทยาลัยของฉัน"></textarea>
+                            </div>
+
+
+                        </div>
+                        <div class="step-actions">
+                            <button type="button" class="btn-prev" onclick="prevStep(1)"><span>⬅️</span>
+                                กลับ</button>
+                            <button type="button" class="btn-next" onclick="nextStep(3)">ต่อไป
+                                <span>➡️</span></button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Hairstyle -->
+                    <div class="form-step" id="step3">
+                        <div class="form-section">
+                            <label class="section-title">3. เลือกทรงผม (Optional)</label>
+                            <p class="section-desc">ใช้ทรงผมเดิมในภาพ <u>กดต่อไปได้เลย</u></p>
+
+                            <div class="input-group">
+                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                                    <label class="checkbox-label"
+                                        style="display: flex; align-items: center; cursor: pointer; margin: 0;">
+                                        <input type="checkbox" id="enableHairstyle"
+                                            style="margin-right: 8px; width: 20px; height: 20px;">
+                                        <span class="label-text" style="font-size: 1rem;">ต้องการเปลี่ยนทรงผม</span>
+                                    </label>
+                                </div>
+
+                                <div class="hair-options hidden" id="hairOptions">
+                                    <!-- Options injected by JS -->
+                                </div>
+                            </div>
+
+                            <div class="step-actions">
+                                <button type="button" class="btn-prev" onclick="prevStep(2)"><span>⬅️</span>
+                                    กลับ</button>
+                                <button type="button" class="btn-next" onclick="nextStep(4)">ต่อไป
+                                    <span>➡️</span></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Background & Submit -->
+                    <div class="form-step" id="step4">
+                        <div class="form-section">
+                            <label class="section-title">4. เลือกสีพื้นหลัง & ส่งงาน</label>
+                            <div class="input-group">
+                                <label>สีฉากหลังที่ต้องการ</label>
+                                <input type="hidden" id="bgColor" value="#FFFFFF">
+                                <div id="bgColorSwatches" class="color-presets"></div>
+
+                                <!-- Preview Box -->
+                                <div
+                                    style="margin-top: 20px; display: flex; flex-direction: column; align-items: center;">
+                                    <label
+                                        style="font-size: 0.9rem; color: #64748b; margin-bottom: 8px;">พรีวิวสีพื้นหลัง</label>
+                                    <div id="bgPreviewBox" class="bg-preview-box"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step-actions" style="margin-top: 25px;">
+                            <button type="button" class="btn-prev" onclick="prevStep(3)"><span>⬅️</span>
+                                กลับ</button>
+                            <button type="submit" class="btn-submit" id="submitBtn">
+                                <span class="btn-text">ส่งคำสั่งทำรูป 🚀</span>
+                                <div class="loader hidden"></div>
+                            </button>
+                        </div>
+
+                        <div id="statusMessage" class="status-message"></div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <div id="notificationContainer"></div>
+
+    <!-- Order Success Modal -->
+    <div id="successModal" class="modal-overlay hidden">
+        <div class="modal-content success-card">
+            <div class="success-icon-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h2>ส่งข้อมูลเรียบร้อย!</h2>
+
+            <div class="pin-box">
+                <p>รหัสอ้างอิง (PIN)</p>
+                <h1 id="successPin">AAAAAA</h1>
+            </div>
+
+            <p style="color: #64748b; margin-top: 20px;">
+                แจ้งผู้ให้บริการเริ่มงานได้ทันที:
+            </p>
+
+            <a href="https://line.me/ti/p/~artap5321" target="_blank" rel="noopener noreferrer" class="line-btn">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="LINE" width="24">
+                <span>แจ้งงานผ่าน LINE</span>
+            </a>
+
+            <button onclick="location.reload()" class="btn-home" style="margin-top: 15px;">
+                กลับหน้าหลัก
+            </button>
+        </div>
+    </div>
+
+    <script src="js/app.js?v=13"></script>
+</body>
+
+</html>

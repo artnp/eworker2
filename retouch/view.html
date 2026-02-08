@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รับงานภาพรูปหน้าตรง - Download</title>
+    <!-- QRCode -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Cropper.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Prompt:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --success: #10b981;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        /* Protection Styles */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        img {
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            pointer-events: none;
+            /* Disables right-click on image directly */
+        }
+
+        .header {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 16px 0;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            width: 100%;
+            max-width: 1000px;
+            padding: 24px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        @media (min-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr 380px;
+                padding: 40px;
+            }
+        }
+
+        .content-left {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .image-wrapper {
+            background: #f1f5f9;
+            padding: 16px;
+            border-radius: 16px;
+            border: 2px dashed var(--border);
+            min-height: 300px;
+            position: relative;
+            /* overflow: hidden; Removed for Cropper overflow */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Ensure image fits for Cropper */
+        .image-wrapper img {
+            display: block;
+            max-width: 100%;
+            max-height: 500px;
+            /* Limit height */
+        }
+
+        /* Payment Section */
+        .payment-bar {
+            background: #f8fafc;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .payment-header {
+            background: var(--primary);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .payment-body {
+            padding: 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .qr-wrapper {
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
+            cursor: pointer;
+        }
+
+        .payment-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin: 12px 0;
+        }
+
+        .payment-amount span {
+            color: var(--primary);
+        }
+
+        .confirm-checkbox-wrapper {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 12px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .confirm-checkbox-wrapper input {
+            display: none;
+        }
+
+        .checkbox-box {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: 2px solid #16a34a;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        input:checked+.checkbox-box {
+            background: #16a34a;
+        }
+
+        .checkbox-box svg {
+            opacity: 0;
+            transition: 0.2s;
+            color: white;
+            width: 16px;
+        }
+
+        input:checked+.checkbox-box svg {
+            opacity: 1;
+        }
+
+        /* Download Options */
+        .download-options {
+            display: none;
+            margin-top: 10px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .crop-controls {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toggle-switch input {
+            display: none;
+        }
+
+        .toggle-slider {
+            width: 44px;
+            height: 24px;
+            background: #cbd5e1;
+            border-radius: 99px;
+            position: relative;
+            transition: 0.3s;
+        }
+
+        .toggle-slider::before {
+            content: "";
+            position: absolute;
+            left: 2px;
+            top: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        input:checked+.toggle-slider {
+            background: var(--primary);
+        }
+
+        input:checked+.toggle-slider::before {
+            transform: translateX(20px);
+        }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+            opacity: 0.5;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .download-grid.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .size-btn {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .size-btn:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+            transform: translateY(-2px);
+        }
+
+        .size-btn strong {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .size-btn small {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        .btn-main {
+            width: 100%;
+            padding: 14px;
+            background: #3b82f6;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-main:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .contact-line {
+            margin-top: 32px;
+            padding: 16px;
+            background: #f0f9ff;
+            border-radius: 12px;
+            text-align: center;
+            color: var(--text);
+            font-size: 0.9rem;
+            border: 1px solid #bae6fd;
+        }
+
+        .contact-line a {
+            color: #0369a1;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        /* Protection */
+        .watermark-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .blur-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 5;
+            transition: backdrop-filter 1s ease;
+        }
+
+        /* 0-10s: Left clear, Right blurred */
+        .blur-half {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            mask-image: linear-gradient(to right, transparent 48%, black 52%);
+            -webkit-mask-image: linear-gradient(to right, transparent 48%, black 52%);
+        }
+
+        /* >10s: Fully blurred */
+        .blur-full {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            mask-image: none;
+            -webkit-mask-image: none;
+        }
+
+        .unlocked .watermark-overlay,
+        .unlocked .blur-overlay {
+            display: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;"
+    onkeydown="return disableCtrlKey(event)">
+
+    <div class="header">
+        <div class="logo">📷 รับงานภาพรูปหน้าตรง</div>
+    </div>
+
+    <div class="main-content">
+        <!-- Image Area -->
+        <div class="content-left">
+            <div class="image-wrapper" id="img-container">
+                <div class="watermark-overlay" id="watermark">PREVIEW ONLY</div>
+                <!-- Blur Overlay Layer -->
+                <div id="blur-overlay" class="blur-overlay blur-full"></div>
+
+                <img id="image" alt="Image Preview">
+                <div id="loading" style="display:none; color: #64748b;">กำลังโหลดภาพ...</div>
+            </div>
+
+            <div class="contact-line">
+                ต้องการแก้ไขภาพเพิ่มเติม ให้ Add LINE : <a href="https://line.me/ti/p/~artap5321"
+                    target="_blank">artap5321</a>
+            </div>
+        </div>
+
+        <!-- Payment Area -->
+        <div class="content-right">
+            <div class="payment-bar" id="payment-panel">
+                <div class="payment-header">
+                    กรุณาชำระค่าบริการ
+                </div>
+                <div class="payment-body">
+                    <div id="qrcode-display" class="qr-wrapper" title="คลิกเพื่อบันทึก QR Code"></div>
+                    <div class="payment-amount">ยอดชำระ: <span id="payment-amount">0.00</span> บาท</div>
+
+                    <label class="confirm-checkbox-wrapper">
+                        <input type="checkbox" id="payment-checkbox" onchange="unlockDownload(this)">
+                        <div class="checkbox-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: #15803d;">ฉันโอนเงินเรียบร้อยแล้ว</div>
+                            <div style="font-size: 0.75rem; color: #16a34a;">คลิกเพื่อปลดล็อคดาวน์โหลด</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div id="success-panel" class="hidden"
+                style="text-align: center; padding: 20px; background: #ecfdf5; border-radius: 16px; border: 1px solid #6ee7b7;">
+                <h3 style="color: #059669; margin-bottom: 8px;">✅ ชำระเงินเรียบร้อย</h3>
+                <p style="color: #047857; font-size: 0.9rem;">
+                    ขอบคุณที่ใช้บริการครับ<br>สามารถดาวน์โหลดรูปต้นฉบับได้ทันที</p>
+            </div>
+
+            <!-- Download Options (Unlocked) -->
+            <div id="download-section" class="download-options">
+
+                <!-- Main Original Download -->
+                <button class="btn-main" onclick="downloadOriginal()">
+                    ⬇️ ดาวน์โหลดภาพต้นฉบับ
+                </button>
+
+                <p
+                    style="font-size: 0.9rem; font-weight: 600; color: var(--text); margin-top: 20px; margin-bottom: 8px;">
+                    ต้องการตัดภาพ (Crop) และเลือกขนาด
+                </p>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+                    ภาพจะแสดงกรอบตัดอัตโนมัติ สามารถเลื่อนปรับเองได้ แล้วกดเลือกขนาดด้านล่าง
+                </p>
+
+                <!-- Size Grid (Auto Active) -->
+                <div id="size-grid" class="download-grid active" style="opacity: 1; pointer-events: auto;">
+                    <button class="size-btn" onclick="setCropRatio(2.8, 3.5, '1_inch', this)">
+                        <strong>รูป 1 นิ้ว</strong>
+                        <small>2.8 x 3.5 ซม.</small>
+                    </button>
+                    <button class="size-btn" onclick="setCropRatio(3.5, 4.2, '1.5_inch', this)">
+                        <strong>รูป 1.5 นิ้ว</strong>
+                        <small>3.5 x 4.2 ซม.</small>
+                    </button>
+                    <button class="size-btn" onclick="setCropRatio(4.2, 5.5, '2_inch', this)">
+                        <strong>รูป 2 นิ้ว</strong>
+                        <small>4.2 x 5.5 ซม.</small>
+                    </button>
+                    <button class="size-btn" onclick="setCropRatio(5.08, 6.35, '2.5_inch', this)">
+                        <strong>รูป 2.5 นิ้ว</strong>
+                        <small>2 x 2.5 นิ้ว</small>
+                    </button>
+                    <button class="size-btn" onclick="setCropRatio(6.1, 7.8, '3_inch', this)">
+                        <strong>รูป 3 นิ้ว</strong>
+                        <small>6.1 x 7.8 ซม.</small>
+                    </button>
+                </div>
+
+                <!-- Save Button (Initially Hidden) -->
+                <button id="btn-save-crop" class="btn-main"
+                    style="margin-top: 20px; display: none; background: #16a34a;" onclick="downloadCurrentCrop()">
+                    💾 บันทึกรูปภาพที่ตัด (Crop)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        let rawUrl = params.get('url');
+        const priceParam = parseFloat(params.get('price')) || 50;
+
+        // Decryption Logic (Matching index.php)
+        function decryptUrl(encoded) {
+            try {
+                const str = atob(encoded); // Base64 Decode
+                const key = "artnp_secure_2024";
+                let result = "";
+                for (let i = 0; i < str.length; i++) {
+                    result += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+                }
+                return result;
+            } catch (e) {
+                console.error("Decryption Failed:", e);
+                return null;
+            }
+        }
+
+        // Try to decrypt or fallback to plain (for old links)
+        let fileUrl = null;
+        if (rawUrl) {
+            // Check if it looks encrypted (Base64)
+            if (rawUrl.match(/^[A-Za-z0-9+/=]+$/) && !rawUrl.startsWith('http')) {
+                fileUrl = decryptUrl(rawUrl);
+            } else {
+                // Fallback for old unencrypted links
+                fileUrl = decodeURIComponent(rawUrl);
+            }
+        }
+
+        // Prevent Keyboard Shortcuts...
+        function disableCtrlKey(e) {
+            if (e.ctrlKey) {
+                return false;
+            }
+            if (e.keyCode == 123) { // F12
+                return false;
+            }
+            return true;
+        }
+
+        const imgEl = document.getElementById('image');
+        const imgContainer = document.getElementById('img-container');
+        const blurOverlay = document.getElementById('blur-overlay');
+        const paymentPanel = document.getElementById('payment-panel');
+        const successPanel = document.getElementById('success-panel');
+        const downloadSection = document.getElementById('download-section');
+        const sizeGrid = document.getElementById('size-grid');
+        const btnSaveCrop = document.getElementById('btn-save-crop');
+
+        // Cropper Instance
+        let cropper = null;
+        let blurTimer = null;
+        let selectedSize = null; // { w, h, name }
+
+        // 1. Load Image with Blob Obfuscation
+        if (fileUrl && fileUrl !== 'null') {
+            document.getElementById('loading').style.display = 'block';
+
+            let finalUrl = fileUrl;
+            // Handle TempFile
+            if (fileUrl.includes('tempfile.org')) {
+                const parts = fileUrl.split('/').filter(Boolean);
+                const fileId = parts[parts.length - 1];
+                finalUrl = `https://tempfile.org/${fileId}/preview`;
+            }
+
+            // Fetch as Blob to hide real URL
+            fetch(finalUrl)
+                .then(response => response.blob())
+                .then(blob => {
+                    const objectURL = URL.createObjectURL(blob);
+                    imgEl.src = objectURL;
+
+                    imgEl.onload = () => {
+                        document.getElementById('loading').style.display = 'none';
+                        imgEl.style.display = 'block';
+
+                        // --- 10s Preview Logic ---
+                        // Start with HALF Blur (Top Clear, Bottom Blurred)
+                        blurOverlay.className = 'blur-overlay blur-half';
+
+                        // Set Timer to Switch to FULL Blur
+                        blurTimer = setTimeout(() => {
+                            if (!imgContainer.classList.contains('unlocked')) {
+                                blurOverlay.className = 'blur-overlay blur-full';
+                            }
+                        }, 10000); // 10 Seconds
+                    };
+                })
+                .catch(err => {
+                    console.error("Image Protection Error:", err);
+                    // Fallback if CORS fails or other fetch error
+                    imgEl.src = finalUrl;
+                    document.getElementById('loading').style.display = 'none';
+                    imgEl.style.display = 'block';
+                    // Re-add onload for fallback
+                    imgEl.onload = () => {
+                        blurOverlay.className = 'blur-overlay blur-half';
+                        blurTimer = setTimeout(() => {
+                            if (!imgContainer.classList.contains('unlocked')) {
+                                blurOverlay.className = 'blur-overlay blur-full';
+                            }
+                        }, 10000);
+                    };
+                });
+
+            // Set CrossOrigin to allow canvas manipulation
+            imgEl.crossOrigin = "Anonymous";
+        } else {
+            // Hide everything if no image
+            paymentPanel.style.display = 'none';
+            imgContainer.innerHTML = '<div style="text-align:center; padding: 40px; color: #64748b;">ไม่พบรูปภาพ (No Image Found)</div>';
+        }
+
+        // 2. Setup Payment
+        function crc16(data) {
+            let crc = 0xFFFF;
+            for (let i = 0; i < data.length; i++) {
+                crc ^= data.charCodeAt(i) << 8;
+                for (let j = 0; j < 8; j++) {
+                    if ((crc & 0x8000) > 0) crc = ((crc << 1) ^ 0x1021) & 0xFFFF;
+                    else crc = (crc << 1) & 0xFFFF;
+                }
+            }
+            return crc.toString(16).toUpperCase().padStart(4, '0');
+        }
+
+        function generatePayload(id, amount) {
+            let target = id.replace(/[^0-9]/g, '');
+            if (target.length === 10 && target.startsWith('0')) target = '0066' + target.substring(1);
+            let merchantInfo = '0016A000000677010111' + '01' + ('00' + target.length).slice(-2) + target;
+            let merchantInfoLen = ('00' + merchantInfo.length).slice(-2);
+            let payload = '000201' + '010211' + '29' + merchantInfoLen + merchantInfo + '5802TH' + '5303764';
+            let amtStr = amount.toFixed(2);
+            payload += '54' + ('00' + amtStr.length).slice(-2) + amtStr;
+            payload += '6304';
+            return payload + crc16(payload);
+        }
+
+        document.getElementById('payment-amount').textContent = priceParam.toFixed(2);
+
+        const ppPayload = generatePayload("0988573074", priceParam);
+        new QRCode(document.getElementById('qrcode-display'), {
+            text: ppPayload,
+            width: 180,
+            height: 180,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.L
+        });
+
+        // 3. Unlock Logic
+        function unlockDownload(chekcbox) {
+            if (chekcbox.checked) {
+                // Auto unlock
+                imgContainer.classList.add('unlocked');
+                paymentPanel.classList.add('hidden');
+                successPanel.classList.remove('hidden');
+                downloadSection.style.display = 'block';
+
+                // Remove blur & overlay
+                document.getElementById('watermark').style.display = 'none';
+
+                // Clear any pending timer
+                if (blurTimer) clearTimeout(blurTimer);
+
+                // Initialize Cropper Immediately
+                initCropperAuto();
+            }
+        }
+
+        // 4. Crop Logic (Auto Init)
+        function initCropperAuto() {
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(imgEl, {
+                viewMode: 1,
+                autoCropArea: 0.8,
+                responsive: true,
+                background: false
+            });
+        }
+
+        function downloadOriginal() {
+            const link = document.createElement('a');
+            link.href = imgEl.src;
+            link.download = 'original_photo.jpg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Set Aspect Ratio & Enable Save
+        function setCropRatio(widthCm, heightCm, filenameSuffix, btnEl) {
+            if (!cropper) {
+                initCropperAuto();
+                if (!cropper) return alert("กำลังโหลด Image Cropper...");
+            }
+
+            // Set Ratio
+            const ratio = widthCm / heightCm;
+            cropper.setAspectRatio(ratio);
+
+            // Store Target
+            selectedSize = { widthCm, heightCm, filenameSuffix };
+
+            // UI Feedback
+            document.querySelectorAll('.size-btn').forEach(b => b.style.borderColor = 'var(--border)'); // Reset
+            document.querySelectorAll('.size-btn').forEach(b => b.style.backgroundColor = 'white'); // Reset
+
+            btnEl.style.borderColor = 'var(--primary)';
+            btnEl.style.backgroundColor = '#eff6ff';
+
+            // Show Save Button
+            btnSaveCrop.style.display = 'flex';
+
+            // Scroll to button
+            btnSaveCrop.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function downloadCurrentCrop() {
+            if (!selectedSize || !cropper) return;
+            const { widthCm, heightCm, filenameSuffix } = selectedSize;
+
+            // 1. Get Cropped Canvas (Full Resolution of Crop)
+            const croppedCanvas = cropper.getCroppedCanvas();
+
+            // 2. Create Target Canvas (300 DPI)
+            const dpi = 300;
+            const targetWidth = Math.round(widthCm / 2.54 * dpi);
+            const targetHeight = Math.round(heightCm / 2.54 * dpi);
+
+            const finalCanvas = document.createElement('canvas');
+            finalCanvas.width = targetWidth;
+            finalCanvas.height = targetHeight;
+            const ctx = finalCanvas.getContext('2d');
+
+            // 3. Draw Resized (Object-Fit: Cover) to prevent distortion
+            const targetRatio = targetWidth / targetHeight;
+            const sourceRatio = croppedCanvas.width / croppedCanvas.height;
+
+            let sx = 0, sy = 0, sw = croppedCanvas.width, sh = croppedCanvas.height;
+
+            // Calculate source rectangle to match target ratio (Center Crop)
+            if (sourceRatio > targetRatio) {
+                // Source is wider than target: Crop width
+                sw = sh * targetRatio;
+                sx = (croppedCanvas.width - sw) / 2;
+            } else {
+                // Source is taller than target: Crop height
+                sh = sw / targetRatio;
+                sy = (croppedCanvas.height - sh) / 2;
+            }
+
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, targetWidth, targetHeight);
+
+            // High Quality Scale
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+
+            // Draw cropped portion of the source to fill target
+            ctx.drawImage(croppedCanvas, sx, sy, sw, sh, 0, 0, targetWidth, targetHeight);
+
+            // 4. Download
+            try {
+                const link = document.createElement('a');
+                link.download = `photo_${filenameSuffix}.jpg`;
+                link.href = finalCanvas.toDataURL('image/jpeg', 0.95);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (e) {
+                console.error(e);
+                // Fallback attempt
+                alert("เกิดข้อผิดพลาดในการบันทึกภาพ (Browser Security)");
+            }
+        }
+    </script>
+</body>
+
+</html>
