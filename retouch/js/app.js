@@ -831,15 +831,31 @@ function showCustomAlert(message, type = 'info') {
 
 async function uploadImageSubroutine(file) {
     let imageUrl = '';
+    let uploadFile = file;
+
+    // 0. Compress if large (> 1MB) to ensure Supabase acceptance & speed
+    if (file.size > 1.5 * 1024 * 1024) { // 1.5MB
+        console.log(`File size ${(file.size / 1024 / 1024).toFixed(2)}MB. Compressing...`);
+        try {
+            uploadFile = await compressImage(file);
+            console.log(`Compressed to ${(uploadFile.size / 1024 / 1024).toFixed(2)}MB`);
+        } catch (err) {
+            console.warn('Compression failed, using original:', err);
+        }
+    }
 
     // 1. Priority: Supabase (Try for all files)
-    console.log('Uploading to Supabase...');
-    imageUrl = await uploadToSupabase(file);
+    console.log('Uploading to Supabase (forced)...');
+    try {
+        imageUrl = await uploadToSupabase(uploadFile);
+    } catch (e) {
+        console.warn("Supabase upload error:", e);
+    }
 
     // 2. Fallback: Tempfile (Temporary 24h)
     if (!imageUrl) {
-        console.warn('Supabase failed. Trying Tempfile (24h)...');
-        imageUrl = await uploadToTempfile(file);
+        console.warn('Supabase failed/skipped. Trying Tempfile (24h)...');
+        imageUrl = await uploadToTempfile(uploadFile);
     }
 
     if (!imageUrl) {
@@ -875,7 +891,7 @@ async function uploadToSupabase(file) {
     return publicUrl;
 }
 
-// function uploadToCatbox removed since PHP proxy is not supported
+// (uploadToCatbox removed)
 
 async function uploadToTempfile(file) {
     try {
@@ -898,6 +914,47 @@ async function uploadToTempfile(file) {
         console.warn('Tempfile failed:', e);
     }
     return null;
+}
+
+// Helper: Compress Image
+function compressImage(file, maxWidth = 1600, quality = 0.85) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                let width = img.width;
+                let height = img.height;
+
+                if (width > maxWidth) {
+                    height = Math.round((height * maxWidth) / width);
+                    width = maxWidth;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                canvas.toBlob((blob) => {
+                    if (!blob) {
+                        reject(new Error('Canvas blob error'));
+                        return;
+                    }
+                    const newFile = new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), {
+                        type: 'image/jpeg',
+                        lastModified: Date.now(),
+                    });
+                    resolve(newFile);
+                }, 'image/jpeg', quality);
+            };
+            img.onerror = (err) => reject(err);
+        };
+        reader.onerror = (err) => reject(err);
+    });
 }
 
 // --- UTILS ---
