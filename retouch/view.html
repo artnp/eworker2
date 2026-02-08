@@ -474,10 +474,6 @@
                     style="font-size: 0.9rem; font-weight: 600; color: var(--text); margin-top: 20px; margin-bottom: 8px;">
                     ต้องการตัดภาพ (Crop) และเลือกขนาด
                 </p>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
-                    ภาพจะแสดงกรอบตัดอัตโนมัติ สามารถเลื่อนปรับเองได้ แล้วกดเลือกขนาดด้านล่าง
-                </p>
-
                 <!-- Size Grid (Auto Active) -->
                 <div id="size-grid" class="download-grid active" style="opacity: 1; pointer-events: auto;">
                     <button class="size-btn" onclick="setCropRatio(2.8, 3.5, '1_inch', this)">
@@ -514,7 +510,9 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         let rawUrl = params.get('url');
-        const priceParam = parseFloat(params.get('price')) || 50;
+        // Fix: Allow 0 to be a valid price. || 50 makes 0 -> 50.
+        const rawPrice = params.get('price');
+        const priceParam = rawPrice !== null ? parseFloat(rawPrice) : 50;
 
         // Decryption Logic (Matching index.php)
         function decryptUrl(encoded) {
@@ -684,17 +682,7 @@
             return payload + crc16(payload);
         }
 
-        document.getElementById('payment-amount').textContent = priceParam.toFixed(2);
 
-        const ppPayload = generatePayload("0988573074", priceParam);
-        new QRCode(document.getElementById('qrcode-display'), {
-            text: ppPayload,
-            width: 180,
-            height: 180,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.L
-        });
 
         // 3. Unlock Logic
         function unlockDownload(chekcbox) {
