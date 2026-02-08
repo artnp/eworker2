@@ -1,0 +1,121 @@
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    animation: fadeIn 0.3s forwards;
+}
+
+/* Modal Content */
+.modal-content.success-card {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    padding: 40px 30px;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: scale(0.9);
+    animation: scaleIn 0.3s 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    position: relative;
+    color: var(--text-on-card);
+}
+
+@keyframes scaleIn {
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Success Icon */
+.success-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    background: #ecfdf5;
+    color: #10b981;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    position: relative;
+}
+
+.success-icon-wrapper svg {
+    width: 40px;
+    height: 40px;
+    stroke-width: 3;
+    animation: drawCheck 0.6s 0.4s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+}
+
+@keyframes drawCheck {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.modal-content h2 {
+    font-size: 1.5rem;
+    color: #064e3b;
+    margin-bottom: 24px;
+    font-weight: 700;
+}
+
+/* PIN Box - Refined */
+.pin-box {
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.pin-box p {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.pin-box h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: 4px;
+    line-height: 1;
+    margin: 0;
+}
+
+/* Buttons */
+.btn-home {
+    background: white;
+    color: var(--text-muted);
+    border: 1px solid #e2e8f0;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.btn-home:hover {
+    background: #f1f5f9;
+    color: var(--text-main);
+}
