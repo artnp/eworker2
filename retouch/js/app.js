@@ -832,23 +832,13 @@ function showCustomAlert(message, type = 'info') {
 async function uploadImageSubroutine(file) {
     let imageUrl = '';
 
-    // 1. Priority: Supabase (Fast & Reliable for small files < 1MB)
-    if (file.size <= 1024 * 1024) { // 1MB Limit
-        console.log('File is small (<1MB). Trying Supabase...');
-        imageUrl = await uploadToSupabase(file);
-    } else {
-        console.log('File is large (>1MB). Skipping Supabase.');
-    }
+    // 1. Priority: Supabase (Try for all files)
+    console.log('Uploading to Supabase...');
+    imageUrl = await uploadToSupabase(file);
 
-    // 2. Fallback: Catbox via Proxy (Permanent, No size limit)
+    // 2. Fallback: Tempfile (Temporary 24h)
     if (!imageUrl) {
-        console.log('Trying Catbox (Permanent via Proxy)...');
-        imageUrl = await uploadToCatbox(file);
-    }
-
-    // 3. Last Resort: Tempfile (Temporary 24h)
-    if (!imageUrl) {
-        console.warn('Catbox failed. Trying Tempfile (24h)...');
+        console.warn('Supabase failed. Trying Tempfile (24h)...');
         imageUrl = await uploadToTempfile(file);
     }
 
