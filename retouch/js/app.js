@@ -875,46 +875,7 @@ async function uploadToSupabase(file) {
     return publicUrl;
 }
 
-async function uploadToCatbox(file) {
-    try {
-        // Use local PHP Proxy to bypass CORS
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = async () => {
-                try {
-                    const base64 = reader.result; // Data URL
-
-                    const response = await fetch('proxy_upload.php', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            image: base64,
-                            type: file.type || 'image/png'
-                        })
-                    });
-
-                    if (!response.ok) throw new Error('Proxy error');
-
-                    const data = await response.json();
-                    if (data.url) {
-                        resolve(data.url);
-                    } else {
-                        console.warn('Proxy returned no URL:', data);
-                        resolve(null);
-                    }
-                } catch (e) {
-                    console.warn('Proxy upload failed:', e);
-                    resolve(null);
-                }
-            };
-            reader.onerror = () => resolve(null);
-        });
-    } catch (e) {
-        console.warn('Catbox/Proxy setup failed:', e);
-    }
-    return null;
-}
+// function uploadToCatbox removed since PHP proxy is not supported
 
 async function uploadToTempfile(file) {
     try {
