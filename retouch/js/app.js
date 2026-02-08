@@ -28,7 +28,13 @@ const cameraFeed = document.getElementById('cameraFeed');
 const cameraCanvas = document.getElementById('cameraCanvas');
 const captureBtn = document.getElementById('captureBtn');
 const closeCameraBtn = document.getElementById('closeCameraBtn');
+
 let bgPreviewBox = null;
+
+// --- VERIFICATION DOM ---
+const verifyInput = document.getElementById('verifyAnswer');
+const verifyQuestionSpan = document.getElementById('verifyQuestion');
+let verifyResult = 0;
 
 // --- STEP CONTROL ---
 let currentStep = 1;
@@ -108,13 +114,14 @@ async function init() {
         setupHairstyles();
         initColorSwatches(); // สร้างปุ่มสีฉากหลัง
 
-        // เช็คเพศตอนเริ่มต้น
         // เช็คเพศตอนเริ่มต้น (ถ้ามี)
         const initialGender = document.querySelector('input[name="gender"]:checked');
         if (initialGender) {
             toggleGenderOptions(initialGender.value);
             setupHairstyles(initialGender.value);
         }
+
+        generateMathQuestion();
 
         // Hairstyle checkbox handling is now managed by HAIRSTYLE LOGIC section
 
@@ -290,6 +297,15 @@ document.getElementsByName('gender').forEach(radio => {
         toggleGenderOptions(e.target.value);
         setupHairstyles(e.target.value);
         updateGownPreview();
+
+        // Auto Advance if image is already uploaded
+        /*
+        if (currentStep === 1 && faceInput.files.length > 0) {
+            setTimeout(() => window.nextStep(2), 600);
+        }
+        */
+        // Check if we can proceed (Verified + File)
+        checkAndProceedStep1();
     });
 });
 
@@ -301,7 +317,11 @@ function toggleGenderOptions(gender) {
 }
 
 // อัพโหลดรูป
-dropZone.addEventListener('click', () => faceInput.click());
+dropZone.addEventListener('click', () => {
+    // Only allow click if verified? OR allow click but don't upload.
+    // Let's allow click so they can see preview, but block upload.
+    faceInput.click();
+});
 
 dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
@@ -349,6 +369,8 @@ function setBgColor(colorObj, btnElement) {
 }
 
 let currentUploadedUrl = null;
+let pendingUploadFile = null;
+let isVerified = false;
 
 async function handleFile(file) {
     if (!file.type.startsWith('image/')) return;
@@ -359,6 +381,17 @@ async function handleFile(file) {
         imagePreview.src = e.target.result;
         imagePreview.classList.remove('hidden');
         uploadPlaceholder.classList.add('hidden');
+
+        // REVEAL VERIFICATION BOX HERE
+        const verifyBox = document.getElementById('verificationBox');
+        if (verifyBox) {
+            verifyBox.classList.remove('hidden');
+            // Scroll to it
+            setTimeout(() => {
+                verifyBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                verifyInput.focus();
+            }, 300);
+        }
     };
     reader.readAsDataURL(file);
 
@@ -369,13 +402,26 @@ async function handleFile(file) {
         faceInput.files = dataTransfer.files;
     }
 
-    // Auto Advance to Step 2
-    setTimeout(() => {
-        if (currentStep === 1) window.nextStep(2);
-    }, 1200);
+    // Store file for later upload
+    pendingUploadFile = file;
+    currentUploadedUrl = null; // Reset prev url
 
+    // Remove old badge
+    const oldBadge = document.getElementById('uploadBadge');
+    if (oldBadge) oldBadge.remove();
+
+    // Check Verification
+    if (isVerified) {
+        // If already verified, start upload immediately
+        startUploadProcess(file);
+    } else {
+        // Show indicator on image that verification is needed
+        // (Optional, maybe not needed since box appears below)
+    }
+}
+
+async function startUploadProcess(file) {
     // 2. Start Background Upload (Auto Upload)
-    // Remove old badge if exists
     const oldBadge = document.getElementById('uploadBadge');
     if (oldBadge) oldBadge.remove();
 
@@ -400,6 +446,11 @@ async function handleFile(file) {
                 loadingBadge.style.opacity = '0';
                 setTimeout(() => loadingBadge.remove(), 500);
             }, 3000);
+
+            // Auto Advance
+            setTimeout(() => {
+                if (currentStep === 1) window.nextStep(2);
+            }, 800);
         }
 
     } catch (err) {
@@ -408,6 +459,13 @@ async function handleFile(file) {
         loadingBadge.classList.add('error');
         currentUploadedUrl = 'FAILED_UPLOAD';
     }
+}
+
+function checkAndProceedStep1() {
+    // Helper to auto-advance if everything is ready
+    if (isVerified && pendingUploadFile && currentUploadedUrl) {
+        if (currentStep === 1) window.nextStep(2);
+    } // If file exists but not uploaded, handleFile logic (or verify logic) handles it
 }
 
 // --- CAMERA LOGIC ---
@@ -610,6 +668,19 @@ form.addEventListener('submit', async (e) => {
     if (!file) {
         showCustomAlert('กรุณาอัพโหลดรูปภาพ', 'error');
         return;
+    }
+
+    // Double check verification
+    if (verifyInput && typeof verifyResult !== 'undefined') {
+        if (parseInt(verifyInput.value) !== verifyResult) {
+            showCustomAlert('กรุณาตอบคำถามยืนยันตัวตนให้ถูกต้อง (Math Incorrect)', 'error');
+            // Re-disable button just in case
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.5';
+            }
+            return;
+        }
     }
 
     setLoading(true);
@@ -916,3 +987,63 @@ function showMessage(msg, className) {
 }
 
 init();
+
+// --- HUMAN VERIFICATION ---
+function generateMathQuestion() {
+    if (!verifyInput || !verifyQuestionSpan) return;
+
+    // Generate numbers between 1 and 9
+    const num1 = Math.floor(Math.random() * 9) + 1;
+    const num2 = Math.floor(Math.random() * 9) + 1;
+    verifyResult = num1 + num2;
+
+    verifyQuestionSpan.textContent = `${num1} + ${num2}`;
+
+
+    verifyQuestionSpan.textContent = `${num1} + ${num2}`;
+    verifyInput.value = '';
+
+    isVerified = false;
+}
+
+if (verifyInput) {
+    verifyInput.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value);
+        const errorMsg = document.getElementById('verifyError');
+        const box = document.getElementById('verificationBox');
+
+        if (val === verifyResult) {
+            isVerified = true;
+            verifyInput.style.borderColor = '#22c55e';
+            verifyInput.style.backgroundColor = '#f0fdf4';
+            if (errorMsg) errorMsg.classList.add('hidden');
+
+            // Hide the box visually
+            if (box) {
+                box.style.transition = 'opacity 0.5s, transform 0.5s';
+                box.style.opacity = '0';
+                box.style.transform = 'translateY(-10px)';
+                setTimeout(() => box.classList.add('hidden'), 500);
+            }
+
+            // Check if there is a pending file waiting to upload
+            if (pendingUploadFile) {
+                // If not yet uploaded, start upload
+                if (!currentUploadedUrl) {
+                    startUploadProcess(pendingUploadFile);
+                } else {
+                    // Already uploaded (edge case), just go next
+                    setTimeout(() => { if (currentStep === 1) window.nextStep(2); }, 500);
+                }
+            }
+
+        } else {
+            isVerified = false;
+            verifyInput.style.borderColor = '#ef4444';
+            verifyInput.style.backgroundColor = '#fff';
+            // Only show error if they typed something of significant length? 
+            // Or just always show error? Let's show only if length > 0
+            if (e.target.value.length > 0 && errorMsg) errorMsg.classList.remove('hidden');
+        }
+    });
+}

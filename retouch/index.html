@@ -61,6 +61,8 @@
                                 </label>
                             </div>
 
+
+
                             <p class="section-desc">ถ่ายรูปหน้าตรง เห็นไหล่ชัดเจน ฉากหลังเรียบๆ (หรือรูปเดิมที่คุณมี)
                             </p>
                             <div class="upload-area" id="dropZone">
@@ -85,6 +87,23 @@
                                 </div>
 
                                 <img id="imagePreview" src="" alt="Preview" class="hidden">
+                            </div>
+
+                            <!-- Human Verification (Starts Hidden) -->
+                            <div class="verification-box hidden" id="verificationBox"
+                                style="margin: 20px 0; padding: 15px; background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; text-align: center;">
+                                <label for="verifyAnswer"
+                                    style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 1rem;">
+                                    🛡️ ยืนยันตัวตนก่อนเริ่ม: <span id="verifyQuestion"
+                                        style="font-weight: bold; color: var(--primary);">Loading...</span> = ?
+                                </label>
+                                <div style="display: flex; gap: 10px; justify-content: center;">
+                                    <input type="number" id="verifyAnswer" placeholder="ใส่คำตอบ"
+                                        style="padding: 10px; border-radius: 8px; border: 1px solid #ccc; width: 140px; text-align: center; font-size: 1.2rem;">
+                                </div>
+                                <p id="verifyError" class="hidden"
+                                    style="color: #ef4444; margin-top: 5px; font-size: 0.9rem;">
+                                    ตอบคำถามไม่ถูกต้อง</p>
                             </div>
                         </div>
 
@@ -223,7 +242,7 @@
                 แจ้งผู้ให้บริการเริ่มงานได้ทันที:
             </p>
 
-            <a href="https://line.me/ti/p/~artap5321" target="_blank" rel="noopener noreferrer" class="line-btn">
+            <a href="https://line.me/ti/p/gqIluRmdJ_" target="_blank" rel="noopener noreferrer" class="line-btn">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="LINE" width="24">
                 <span>แจ้งงานผ่าน LINE</span>
             </a>
