@@ -573,6 +573,9 @@
         if (fileUrl && fileUrl !== 'null') {
             document.getElementById('loading').style.display = 'block';
 
+            // Try enabling CORS initially (needed for cropping if supported)
+            imgEl.setAttribute('crossorigin', 'anonymous');
+
             let finalUrl = fileUrl;
             // Handle TempFile
             if (fileUrl.includes('tempfile.org')) {
@@ -605,11 +608,13 @@
                     };
                 })
                 .catch(err => {
-                    console.error("Image Protection Error:", err);
                     // Fallback if CORS fails or other fetch error
+                    console.log("Fetching as Blob failed, trying direct load...");
+                    imgEl.removeAttribute('crossorigin'); // Remove CORS restriction for direct load
                     imgEl.src = finalUrl;
                     document.getElementById('loading').style.display = 'none';
                     imgEl.style.display = 'block';
+
                     // Re-add onload for fallback
                     imgEl.onload = () => {
                         blurOverlay.className = 'blur-overlay blur-half';
@@ -621,15 +626,40 @@
                     };
                 });
 
-            // Set CrossOrigin to allow canvas manipulation
-            imgEl.crossOrigin = "Anonymous";
+            // Try with CORS first (for Cropping) - applied before src is set by blob or fallback
+            // imgEl.crossOrigin = "Anonymous"; // Moved logic to specific cases
         } else {
             // Hide everything if no image
             paymentPanel.style.display = 'none';
             imgContainer.innerHTML = '<div style="text-align:center; padding: 40px; color: #64748b;">ไม่พบรูปภาพ (No Image Found)</div>';
         }
 
-        // 2. Setup Payment
+        // 2. Setup Payment & Auto-Unlock for Free
+        if (priceParam <= 0) {
+            // Free / Paid
+            paymentPanel.style.display = 'none';
+            successPanel.classList.remove('hidden');
+            downloadSection.style.display = 'block';
+            imgContainer.classList.add('unlocked');
+            document.getElementById('watermark').style.display = 'none';
+            // Init Cropper
+            if (imgEl.complete) initCropperAuto();
+            else imgEl.addEventListener('load', initCropperAuto);
+        } else {
+            // Need Payment
+            document.getElementById('payment-amount').textContent = priceParam.toFixed(2);
+
+            const ppPayload = generatePayload("0988573074", priceParam);
+            new QRCode(document.getElementById('qrcode-display'), {
+                text: ppPayload,
+                width: 180,
+                height: 180,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.L
+            });
+        }
+
         function crc16(data) {
             let crc = 0xFFFF;
             for (let i = 0; i < data.length; i++) {
