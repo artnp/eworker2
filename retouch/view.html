@@ -470,12 +470,15 @@
                     ⬇️ ดาวน์โหลดภาพต้นฉบับ
                 </button>
 
-                <p
-                    style="font-size: 0.9rem; font-weight: 600; color: var(--text); margin-top: 20px; margin-bottom: 8px;">
-                    ต้องการตัดภาพ (Crop) และเลือกขนาด
-                </p>
-                <!-- Size Grid (Auto Active) -->
-                <div id="size-grid" class="download-grid active" style="opacity: 1; pointer-events: auto;">
+                <div style="margin-top: 20px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="crop-toggle" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary);" onchange="toggleCropSection(this)">
+                    <label for="crop-toggle" style="font-size: 0.9rem; font-weight: 600; color: var(--text); cursor: pointer; user-select: none;">
+                        ต้องการตัดภาพ (Crop) และเลือกขนาด
+                    </label>
+                </div>
+
+                <!-- Size Grid (Initially Hidden) -->
+                <div id="size-grid" class="download-grid" style="display: none; opacity: 0; pointer-events: none;">
                     <button class="size-btn" onclick="setCropRatio(2.8, 3.5, '1_inch', this)">
                         <strong>รูป 1 นิ้ว</strong>
                         <small>2.8 x 3.5 ซม.</small>
@@ -808,6 +811,24 @@
                 console.error(e);
                 // Fallback attempt
                 alert("เกิดข้อผิดพลาดในการบันทึกภาพ (Browser Security)");
+            }
+        }
+
+        function toggleCropSection(cb) {
+            const grid = document.getElementById('size-grid');
+            if (cb.checked) {
+                grid.style.display = 'grid';
+                // Small delay to allow display:grid to apply before opacity transition
+                requestAnimationFrame(() => {
+                    grid.style.opacity = '1';
+                    grid.style.pointerEvents = 'auto';
+                });
+            } else {
+                grid.style.opacity = '0';
+                grid.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    grid.style.display = 'none';
+                }, 300); // Wait for transition
             }
         }
     </script>
