@@ -995,6 +995,7 @@ function showMessage(msg, className) {
 }
 
 init();
+initComparisonSlider();
 
 // --- HUMAN VERIFICATION ---
 function generateMathQuestion() {
@@ -1054,4 +1055,34 @@ if (verifyInput) {
             if (e.target.value.length > 0 && errorMsg) errorMsg.classList.remove('hidden');
         }
     });
+}
+
+// --- BEFORE AFTER SLIDER LOGIC ---
+function initComparisonSlider() {
+    const container = document.getElementById('exampleSlider');
+    const beforeBox = document.getElementById('beforeImgBox');
+    const handle = document.getElementById('sliderHandle');
+
+    if (!container || !beforeBox || !handle) return;
+
+    let autoPos = 50;
+    let direction = 0.5;
+
+    function setPosition(percentage) {
+        percentage = Math.max(0, Math.min(100, percentage));
+        beforeBox.style.width = percentage + '%';
+        handle.style.left = percentage + '%';
+    }
+
+    function animate() {
+        autoPos += direction;
+        if (autoPos > 90 || autoPos < 10) {
+            direction *= -1; // Reverse
+        }
+        setPosition(autoPos);
+        requestAnimationFrame(animate);
+    }
+
+    // Start Pure Auto-Animation (Interaction is disabled via CSS pointer-events)
+    animate();
 }

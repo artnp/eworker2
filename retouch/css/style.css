@@ -29,18 +29,23 @@ body {
 }
 
 .container {
-    max-width: 600px;
+    max-width: 500px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 10px 15px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
 }
 
 header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 15px;
 }
 
 header h1 {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     font-weight: 600;
     letter-spacing: -0.02em;
     margin-bottom: 10px;
@@ -71,7 +76,7 @@ header p {
 }
 
 .card {
-    padding: 32px;
+    padding: 20px;
 }
 
 .form-section {
@@ -659,23 +664,56 @@ input:checked+.slider:before {
 
 @media (max-width: 480px) {
     .container {
-        padding: 20px 10px;
+        padding: 5px 10px;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    header {
+        margin-bottom: 10px;
     }
 
     header h1 {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
     }
 
-    .social-links {
-        grid-template-columns: 1fr;
+    .card {
+        padding: 15px;
+    }
+
+    .step-progress {
+        margin-bottom: 20px;
     }
 }
 
 footer {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 20px;
     color: var(--text-muted);
     font-size: 0.85rem;
+}
+
+.gold-text {
+    background: linear-gradient(to right,
+            #bf953f,
+            #fcf6ba,
+            #b38728,
+            #fbf5b7,
+            #aa771c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+    display: inline-block;
+    filter: drop-shadow(0 0 2px rgba(186, 149, 63, 0.4));
+    background-size: 200% auto;
+    animation: shine 3s linear infinite;
+}
+
+@keyframes shine {
+    to {
+        background-position: 200% center;
+    }
 }
 
 /* Success Screen */
@@ -797,6 +835,140 @@ video#cameraFeed {
     font-size: 0;
     cursor: pointer;
     transition: transform 0.1s;
+}
+
+/* Floating Before After Slider */
+.comparison-container {
+    width: 160px;
+    position: fixed;
+    top: 180px;
+    left: calc(50% + 270px);
+    z-index: 100;
+    margin: 0;
+    border-radius: 24px;
+    /* More rounded */
+    box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    /* Disable mouse/touch interaction */
+    border: 3px solid var(--primary);
+    background: #000;
+    overflow: hidden;
+    /* Ensure content follows rounded corners */
+}
+
+.comparison-container:hover {
+    transform: scale(1.1);
+}
+
+.comparison-slider {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    touch-action: none;
+}
+
+@media (max-width: 1100px) {
+    .comparison-container {
+        left: auto;
+        right: 15px;
+        top: 20px;
+        width: 120px;
+    }
+
+    .comparison-slider {
+        height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .comparison-container {
+        width: 100px;
+        top: 10px;
+        right: 10px;
+    }
+
+    .comparison-slider {
+        height: 130px;
+    }
+
+    .badge-text {
+        font-size: 0.8rem;
+        padding: 4px 12px;
+    }
+}
+
+.comparison-slider img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.comparison-slider .img-after {
+    width: 100%;
+    z-index: 1;
+}
+
+.comparison-slider .img-before {
+    width: 50%;
+    z-index: 2;
+    border-right: 2px solid rgba(255, 255, 255, 0.8);
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    overflow: hidden;
+    /* FIX: Clipping the image */
+}
+
+.before-img-full {
+    width: 160px !important;
+    /* Width must match .comparison-container */
+    height: 100% !important;
+    max-width: none !important;
+    object-fit: cover;
+}
+
+@media (max-width: 1100px) {
+    .before-img-full {
+        width: 120px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .before-img-full {
+        width: 100px !important;
+    }
+}
+
+.slider-handle {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    background: white;
+    z-index: 3;
+    pointer-events: none;
+    transform: translateX(-50%);
+}
+
+.slider-handle::after {
+    content: "";
+    /* Clean move icon */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .btn-capture:active {
