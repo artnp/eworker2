@@ -833,8 +833,8 @@ async function uploadImageSubroutine(file) {
     let imageUrl = '';
     let uploadFile = file;
 
-    // 0. Compress if large (> 1MB) to ensure Supabase acceptance & speed
-    if (file.size > 1.5 * 1024 * 1024) { // 1.5MB
+    // 0. Compress if large (> 2MB) to ensure Supabase acceptance & speed
+    if (file.size > 2.0 * 1024 * 1024) { // 2MB
         console.log(`File size ${(file.size / 1024 / 1024).toFixed(2)}MB. Compressing...`);
         try {
             uploadFile = await compressImage(file);
@@ -917,7 +917,7 @@ async function uploadToTempfile(file) {
 }
 
 // Helper: Compress Image
-function compressImage(file, maxWidth = 1600, quality = 0.85) {
+function compressImage(file, maxWidth = 2500, quality = 0.92) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
