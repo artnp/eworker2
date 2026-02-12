@@ -496,6 +496,15 @@ closeCameraBtn.addEventListener('click', (e) => {
 
 captureBtn.addEventListener('click', (e) => {
     e.stopPropagation();
+
+    // Flash effect
+    cameraFeed.style.transition = 'none';
+    cameraFeed.style.opacity = '0.4';
+    setTimeout(() => {
+        cameraFeed.style.transition = 'opacity 0.2s';
+        cameraFeed.style.opacity = '1';
+    }, 50);
+
     const context = cameraCanvas.getContext('2d');
     cameraCanvas.width = cameraFeed.videoWidth;
     cameraCanvas.height = cameraFeed.videoHeight;

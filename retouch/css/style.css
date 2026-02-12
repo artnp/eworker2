@@ -816,6 +816,31 @@ video#cameraFeed {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transform: scaleX(-1);
+    /* Mirror feed */
+}
+
+.face-guide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 15;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+.silhouette {
+    width: 260px;
+    height: 340px;
+    margin: 0;
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+    opacity: 0.9;
 }
 
 .camera-controls {

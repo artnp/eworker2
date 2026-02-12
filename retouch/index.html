@@ -92,6 +92,21 @@
 
                                 <div id="cameraContainer" class="camera-container hidden">
                                     <video id="cameraFeed" autoplay playsinline></video>
+                                    <div class="face-guide">
+                                        <svg class="silhouette" viewBox="0 0 200 260"
+                                            preserveAspectRatio="xMidYMid meet">
+                                            <!-- Head -->
+                                            <ellipse cx="100" cy="90" rx="55" ry="70" fill="none"
+                                                stroke="rgba(255,255,255,0.8)" stroke-width="3" />
+                                            <!-- Shoulders -->
+                                            <path d="M 20 260 Q 25 190 100 190 Q 175 190 180 260" fill="none"
+                                                stroke="rgba(255,255,255,0.8)" stroke-width="3"
+                                                stroke-linecap="round" />
+                                            <!-- Eye Level -->
+                                            <line x1="60" y1="90" x2="140" y2="90" stroke="rgba(255,255,255,0.4)"
+                                                stroke-width="1" stroke-dasharray="4 4" />
+                                        </svg>
+                                    </div>
                                     <canvas id="cameraCanvas" class="hidden"></canvas>
                                     <div class="camera-controls">
                                         <button type="button" class="btn-capture" id="captureBtn">🔘 ถ่ายรูป</button>
